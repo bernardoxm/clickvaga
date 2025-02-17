@@ -36,6 +36,3 @@ O código deve ser desenvolvido seguindo princípios como:
 ## 📌 Conclusão
 O objetivo do projeto é substituir o caderno físico do Sr. João por um aplicativo eficiente e fácil de usar, ajudando na gestão do estacionamento de forma moderna e prática.
 
----
-
-**Qualquer dúvida, estamos à disposição!** 🚀
