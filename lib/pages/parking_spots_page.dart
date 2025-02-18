@@ -43,7 +43,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   List<ParkingSpot> parkingSpots = [];
   int totalSpots = 0;
   int filter = 1;
-  double filter2 = 5;
+  double filter2 = 4;
   int filterStatus =
       0; // 0 = Todos, 1 = Apenas Ocupados, 2 = Apenas Disponíveis
 
@@ -185,7 +185,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Estacionamento"),
+        title: Text("Pátio"),
         actions: [
           PopupMenuButton<String>(
             icon: Icon(Icons.menu),
@@ -197,7 +197,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
               } else if (choice == "view") {
                 setState(() {
                   filter = filter == 1 ? 2 : 1;
-                  filter2 = filter2 == 5 ? 2 : 5;
+                  filter2 = filter2 == 4 ? 1.9 : 4;
                 });
               } else if (choice == "filtro") {
                 setState(() {

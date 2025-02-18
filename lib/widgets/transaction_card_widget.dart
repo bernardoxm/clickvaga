@@ -34,7 +34,7 @@ class TransactionCardWidget extends StatelessWidget {
         ), 
         leading: Icon(
           transactionModel.endDate == null ? Icons.directions_car : Icons.check_circle,
-          color: transactionModel.endDate == null ? Colors.red : Colors.green,
+          color: transactionModel.endDate == null ? Colors.red :  Color.fromRGBO(68, 194, 253,1),
         ),
       ),
     );

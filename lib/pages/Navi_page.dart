@@ -1,16 +1,17 @@
+
 import 'package:clickvaga/pages/report_transactions.dart';
 import 'package:clickvaga/pages/parking_spots_page.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class NaviPage extends StatefulWidget {
+  const NaviPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _HomePageState createState() => _HomePageState();
+  _NaviPageState createState() => _NaviPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NaviPageState extends State<NaviPage> {
   int _selectedIndex = 0; 
 
 
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.blue, // Cor do ícone selecionado
+        selectedItemColor:  Color.fromRGBO(68, 194, 253,1), // Cor do ícone selecionado
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class EntryDialogWidget extends StatefulWidget {
   final Function(String) onConfirm;
@@ -15,14 +16,23 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Entrada de veículo'),
-      content: TextField(
-        decoration: InputDecoration(labelText: "Placa"),
-        onChanged: (value) {
-          plate = value;
-        },
+      content: SizedBox(height: MediaQuery.of(context).size.height * 0.12,
+      width: MediaQuery.of(context).size.height * 1,
+        child: Column( spacing: 10,
+          children: [
+            
+            TextField(
+              decoration: InputDecoration(labelText: "Placa"),
+              onChanged: (value) {
+                plate = value;
+              }, 
+            ),
+            Text("Entrada: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now())}"),
+          ],
+        ),
       ),
       actions: [
-        TextButton(
+        Row(children: [   TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text("Cancelar")),
         ElevatedButton(
@@ -33,7 +43,8 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
             }
           },
           child: Text("Registrar entrada"),
-        ),
+        ),],)
+     
       ],
     );
   }
