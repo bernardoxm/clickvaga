@@ -1,5 +1,4 @@
 
-import 'package:clickvaga/pages/parking_spots_page.dart';
 import 'package:flutter/material.dart';
 
 class ParkingSpotCardWidget extends StatelessWidget {

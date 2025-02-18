@@ -94,8 +94,19 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   Future<void> _removeLastSpot() async {
     int indexToRemove = parkingSpots.lastIndexWhere((spot) => !spot.isOccupied);
     if (indexToRemove == -1) {
-      print("Todas as vagas estão ocupadas. Não é possível remover.");
-      return;
+
+      return showDialog(context: context, builder: (context) {
+        return AlertDialog(
+          title: Text("Erro"),
+          content: Text("Não é possível remover uma vaga ocupada"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Ok"),
+            ),
+          ],
+        );
+      });
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -128,36 +139,36 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          title: Text("Configurar Vagas"),
+          title: Text("Informe o número de vagas"),
           content: TextField(
             controller: spotsController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: "Número de vagas"),
           ),
           actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text("Cancelar")),
-            ElevatedButton(
-              onPressed: () async {
-                int? spots = int.tryParse(spotsController.text);
-                if (spots != null && spots > 0) {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  await prefs.setInt('totalSpots', spots);
-
-                  setState(() {
-                    totalSpots = spots;
-                    parkingSpots =
-                        List.generate(totalSpots, (index) => ParkingSpot());
-                  });
-
-                  await _saveParkingSpots();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pop(context);
-                }
-              },
-              child: Text("Salvar"),
+          
+            Center( 
+              child: ElevatedButton(
+                onPressed: () async {
+                  int? spots = int.tryParse(spotsController.text);
+                  if (spots != null && spots > 0) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.setInt('totalSpots', spots);
+              
+                    setState(() {
+                      totalSpots = spots;
+                      parkingSpots =
+                          List.generate(totalSpots, (index) => ParkingSpot());
+                    });
+              
+                    await _saveParkingSpots();
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text("Salvar"),
+              ),
             ),
           ],
         );
