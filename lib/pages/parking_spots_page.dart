@@ -1,3 +1,4 @@
+import 'package:clickvaga/models/transaction_model.dart';
 import 'package:clickvaga/widgets/entry_dialog_widget.dart';
 import 'package:clickvaga/widgets/exit_dialog_widget.dart';
 import 'package:clickvaga/widgets/parking_spot_card_widget.dart';
@@ -91,14 +92,16 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   }
 
   Future<void> _removeLastSpot() async {
-    if (parkingSpots.isEmpty) return;
-
+    int indexToRemove = parkingSpots.lastIndexWhere((spot) => !spot.isOccupied);
+    if (indexToRemove == -1) {
+      print("Todas as vagas estão ocupadas. Não é possível remover.");
+      return;
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       totalSpots -= 1;
-      parkingSpots.removeLast();
+      parkingSpots.removeAt(indexToRemove);
     });
-
     if (totalSpots <= 0) {
       _showConfigDialog();
     } else {
@@ -165,7 +168,6 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   @override
   Widget build(BuildContext context) {
     List<ParkingSpot> filteredSpots = getFilteredSpots();
-List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toList();
     if (totalSpots == 0) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -180,25 +182,7 @@ List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toL
               if (choice == "add") {
                 _addNewSpot();
               } else if (choice == "remove") {
-                if(isOccupied.isEmpty){
-                  _removeLastSpot();} else {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("Erro"),
-                          content: Text("Não é possível remover uma vaga ocupada"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text("Ok"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                
+                _removeLastSpot();
               } else if (choice == "view") {
                 setState(() {
                   filter = filter == 1 ? 2 : 1;
@@ -206,8 +190,7 @@ List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toL
                 });
               } else if (choice == "filtro") {
                 setState(() {
-                          filterStatus = (filterStatus + 1) % 3;
-
+                  filterStatus = (filterStatus + 1) % 3;
                 });
               }
             },
@@ -222,10 +205,13 @@ List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toL
                       leading: Icon(Icons.remove),
                       title: Text("Remover Última Vaga"))),
               PopupMenuItem<String>(
-                  value: "view",
-                  child: ListTile(
-                      leading: Icon(Icons.filter_1_sharp),
-                      title: Text("Visualizar"))),
+                value: "view",
+                child: ListTile(
+                    leading: Icon(Icons.filter_1_sharp),
+                    title: Text(filter == 1
+                        ? "Visualizar em Quadrados"
+                        : "Visualizar em Linhas")),
+              ),
               PopupMenuItem<String>(
                   value: "filtro",
                   child: ListTile(
@@ -242,33 +228,55 @@ List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toL
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: filter,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: filter2,
-          ),
-          itemCount: filteredSpots.length,
-          itemBuilder: (context, index) {
-              int originalIndex = parkingSpots.indexOf(filteredSpots[index]);
-            return ParkingSpotCardWidget(
-              index: originalIndex,
-              isOccupied: filteredSpots[index].isOccupied,
-              plate: filteredSpots[index].plate,
-              entryTime: filteredSpots[index].entryTime,
-              onTap: () {
-                if (filteredSpots[index].isOccupied) {
-          _showExitDialog(parkingSpots.indexOf(filteredSpots[index]));
-                } else {
-          _showEntryDialog(parkingSpots.indexOf(filteredSpots[index]));
-                }
-              },
-            );
-          },
-        ),
+        child: filteredSpots.isEmpty
+            ? Center(
+                child: Text("Não a vagas disponíveis ou ocupadas"),
+              )
+            : GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: filter,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: filter2,
+                ),
+                itemCount: filteredSpots.length,
+                itemBuilder: (context, index) {
+                  int originalIndex =
+                      parkingSpots.indexOf(filteredSpots[index]);
+                  return ParkingSpotCardWidget(
+                    index: originalIndex,
+                    isOccupied: filteredSpots[index].isOccupied,
+                    plate: filteredSpots[index].plate,
+                    entryTime: filteredSpots[index].entryTime,
+                    onTap: () {
+                      if (filteredSpots[index].isOccupied) {
+                        _showExitDialog(
+                            parkingSpots.indexOf(filteredSpots[index]));
+                      } else {
+                        _showEntryDialog(
+                            parkingSpots.indexOf(filteredSpots[index]));
+                      }
+                    },
+                  );
+                },
+              ),
       ),
     );
+  }
+
+  Future<void> _registerEntry(String plate) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    TransactionModel newTransaction = TransactionModel(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      plate: plate,
+      date: DateTime.now(),
+    );
+
+    List<String>? savedData = prefs.getStringList('parkingTransactions') ?? [];
+    savedData.add(json.encode(newTransaction.toJson()));
+
+    await prefs.setStringList('parkingTransactions', savedData);
   }
 
   void _showEntryDialog(int index) {
@@ -281,12 +289,36 @@ List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toL
               parkingSpots[index].isOccupied = true;
               parkingSpots[index].plate = plate;
               parkingSpots[index].entryTime = DateTime.now();
+
+              _saveParkingSpots();
+              _registerEntry(plate);
             });
-            _saveParkingSpots();
           },
         );
       },
     );
+  }
+
+  Future<void> _registerExit(String plate) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? savedData = prefs.getStringList('parkingTransactions');
+
+    if (savedData == null) return;
+
+    List<TransactionModel> transactions = savedData
+        .map((t) => TransactionModel.fromJson(json.decode(t)))
+        .toList();
+
+    for (var transaction in transactions) {
+      if (transaction.plate == plate && transaction.endDate == null) {
+        transaction.endDate = DateTime.now();
+        break;
+      }
+    }
+
+    List<String> updatedData =
+        transactions.map((t) => json.encode(t.toJson())).toList();
+    await prefs.setStringList('parkingTransactions', updatedData);
   }
 
   void _showExitDialog(int index) {
@@ -299,10 +331,12 @@ List<ParkingSpot> isOccupied = parkingSpots.where((spot) => spot.isOccupied).toL
           onConfirm: () {
             setState(() {
               parkingSpots[index].isOccupied = false;
-              parkingSpots[index].plate = "";
+
               parkingSpots[index].entryTime = null;
+              _saveParkingSpots();
+              _registerExit(parkingSpots[index].plate);
+              parkingSpots[index].plate = "";
             });
-            _saveParkingSpots();
           },
         );
       },
