@@ -1,0 +1,2 @@
+/Users/bmac/Documents/Trabalho/Click Vaga/clickvaga/android/app/.cxx/Debug/6h266z5o/x86/CMakeFiles/edit_cache.dir
+/Users/bmac/Documents/Trabalho/Click Vaga/clickvaga/android/app/.cxx/Debug/6h266z5o/x86/CMakeFiles/rebuild_cache.dir
