@@ -1,5 +1,5 @@
-import 'package:clickvaga/bloc/bloc_transaction/transaction_bloc.dart';
-import 'package:clickvaga/bloc/bloc_transaction/transaction_event.dart';
+import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
+import 'package:clickvaga/bloc/bloc_parking/parking_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -48,7 +48,7 @@ class ExitDialogWidget extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () {
-            context.read<ParkingBloc>().add(RemoveVehicle(plate));
+          
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Veículo $plate saiu do estacionamento")),
             );

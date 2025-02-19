@@ -1,6 +1,7 @@
-import 'package:clickvaga/bloc/bloc_transaction/transaction_bloc.dart';
-import 'package:clickvaga/bloc/bloc_transaction/transaction_state.dart';
+import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
+import 'package:clickvaga/bloc/bloc_parking/parking_state.dart';
 import 'package:clickvaga/models/transaction_model.dart';
+import 'package:clickvaga/widgets/config_welcome_widget.dart';
 import 'package:clickvaga/widgets/entry_dialog_widget.dart';
 import 'package:clickvaga/widgets/exit_dialog_widget.dart';
 import 'package:clickvaga/widgets/parking_spot_card_widget.dart';
@@ -167,43 +168,46 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
 
   Future<void> _showConfigDialog() async {
     TextEditingController spotsController = TextEditingController();
-
+ 
     await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: Text("Informe o número de vagas"),
-          content: TextField(
-            controller: spotsController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: "Número de vagas"),
-          ),
-          actions: [
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  int? spots = int.tryParse(spotsController.text);
-                  if (spots != null && spots > 0) {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    await prefs.setInt('totalSpots', spots);
-
-                    setState(() {
-                      totalSpots = spots;
-                      parkingSpots =
-                          List.generate(totalSpots, (index) => ParkingSpot());
-                    });
-
-                    await _saveParkingSpots();
-                    // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text("Salvar"),
+        return Center(
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              title: Text(
+                "Vamos comecar!!!",
+                textAlign: TextAlign.center,
               ),
+              content:ConfigWelcomeWidget(spotsController: spotsController),
+              actions: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      int? spots = int.tryParse(spotsController.text);
+                      if (spots != null && spots > 0) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        await prefs.setInt('totalSpots', spots);
+
+                        setState(() {
+                          totalSpots = spots;
+                          parkingSpots = List.generate(
+                              totalSpots, (index) => ParkingSpot());
+                        });
+
+                        await _saveParkingSpots();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text("Salvar"),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -221,12 +225,10 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
         backgroundColor: Colors.blue,
         title: Text(
           "Pátio",
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         actions: [
           PopupMenuButton<String>(
-            icon: Icon(Icons.menu, color: Colors.white),
+            icon: Icon(Icons.menu),
             onSelected: (String choice) {
               if (choice == "add") {
                 _addNewSpot();
@@ -303,34 +305,6 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
       ),
       body: Column(
         children: [
-          BlocBuilder<ParkingBloc, ParkingState>(
-            builder: (context, state) {
-              return Container(
-                color: Colors.blue,
-                padding: EdgeInsets.all(16.0),
-                child: Row(
-                  spacing: 10,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Disponíveis: ${state.availableSpots}",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                    Text(
-                      "Ocupados: ${state.occupiedSpots.length}",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(10),

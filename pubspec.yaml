@@ -72,7 +72,8 @@ flutter:
   assets:
    - assets/truck.png
    - assets/truckP.png
- 
+   - assets/iconApp.png
+  
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

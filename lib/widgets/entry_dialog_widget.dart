@@ -1,7 +1,7 @@
 import 'package:clickvaga/bloc/bloc_plate/plate_bloc.dart';
 import 'package:clickvaga/bloc/bloc_plate/plate_event.dart';
-import 'package:clickvaga/bloc/bloc_transaction/transaction_bloc.dart';
-import 'package:clickvaga/bloc/bloc_transaction/transaction_event.dart';
+import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
+import 'package:clickvaga/bloc/bloc_parking/parking_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +40,6 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                   border: OutlineInputBorder(),
                 ),
                 inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'[A-Z0-9-]')),
                   PlacaVeiculoInputFormatter(),
                 ],
                 onChanged: (value) {
@@ -74,7 +73,6 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                 onPressed: () {
                   var plate = context.read<PlateBloc>().state.plate;
                   if (plate.isNotEmpty) {
-                    context.read<ParkingBloc>().add(AddVehicle(plate));
                     widget.onConfirm(plate);
                     Navigator.pop(context);
                     plate = "";
