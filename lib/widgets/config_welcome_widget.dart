@@ -47,7 +47,7 @@ class _ConfigWelcomeWidgetState extends State<ConfigWelcomeWidget> {
             ),
           ),
           Text(
-            'Bem Vindo ao ClickVaga!',
+            'Bem Vindo ao ClickVagas!',
             textAlign: TextAlign.center,
           ),
           Text(
