@@ -1,4 +1,4 @@
-import 'package:clickvaga/bloc/bloc_plate/plate_event.dart';
+import 'package:clickvagas/bloc/bloc_plate/plate_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PlateBloc extends Bloc<PlateEvent, PlateState> {

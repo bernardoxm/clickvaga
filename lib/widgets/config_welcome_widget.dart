@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class ConfigWelcomeWidget extends StatefulWidget {
@@ -57,7 +58,11 @@ class _ConfigWelcomeWidgetState extends State<ConfigWelcomeWidget> {
           TextFormField(
             controller: widget.spotsController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: "Número de vagas"),
+            decoration: InputDecoration(labelText: "Número de vagas",), textAlign: TextAlign.center, inputFormatters: [
+    FilteringTextInputFormatter.digitsOnly, 
+    LengthLimitingTextInputFormatter(3),
+    
+  ],
           ),
         ],
       ),

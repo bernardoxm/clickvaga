@@ -1,10 +1,10 @@
-import 'package:clickvaga/models/parking_spot_model.dart';
-import 'package:clickvaga/models/transaction_model.dart';
-import 'package:clickvaga/widgets/config_welcome_widget.dart';
-import 'package:clickvaga/widgets/entry_dialog_widget.dart';
-import 'package:clickvaga/widgets/exit_dialog_widget.dart';
-import 'package:clickvaga/widgets/find_widget.dart';
-import 'package:clickvaga/widgets/parking_spot_card_widget.dart';
+import 'package:clickvagas/models/parking_spot_model.dart';
+import 'package:clickvagas/models/transaction_model.dart';
+import 'package:clickvagas/widgets/config_welcome_widget.dart';
+import 'package:clickvagas/widgets/entry_dialog_widget.dart';
+import 'package:clickvagas/widgets/exit_dialog_widget.dart';
+import 'package:clickvagas/widgets/find_widget.dart';
+import 'package:clickvagas/widgets/parking_spot_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';

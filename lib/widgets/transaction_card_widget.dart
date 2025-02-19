@@ -1,4 +1,4 @@
-import 'package:clickvaga/models/transaction_model.dart';
+import 'package:clickvagas/models/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 // TransactionCardWidget is a StatelessWidget that shows a card with information about a transaction.
