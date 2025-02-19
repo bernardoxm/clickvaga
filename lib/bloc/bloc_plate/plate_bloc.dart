@@ -11,25 +11,33 @@ class PlateBloc extends Bloc<PlateEvent, PlateState> {
   }
 
   bool _validatePlate(String plate) {
-  final regexOld = RegExp(r'^[A-Z]{3}-\d{4}$'); // Padrão antigo: AAA-1234
-  final regexNew = RegExp(r'^[A-Z]{3}\d[A-Z]\d{2}$'); // Padrão novo: AAA1A23
+  final regexOld = RegExp(r'^[A-Z]{3}-\d{4}$'); 
+  final regexNew = RegExp(r'^[A-Z]{3}\d[A-Z]\d{2}$');
   return regexOld.hasMatch(plate) || regexNew.hasMatch(plate);
 }
   String _formatPlate(String plate) {
   plate = plate.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
 
   if (plate.length > 7) {
-    plate = plate.substring(0, 7); // Garante que a placa não tenha mais de 7 caracteres
+    plate = plate.substring(0, 7);
   }
 
   if (plate.length == 7) {
     if (RegExp(r'^[A-Z]{3}\d{4}$').hasMatch(plate)) {
-      return '${plate.substring(0, 3)}-${plate.substring(3, 7)}'; // Formato AAA-1234
+      return '${plate.substring(0, 3)}-${plate.substring(3, 7)}'; 
     } else if (RegExp(r'^[A-Z]{3}\d[A-Z]\d{2}$').hasMatch(plate)) {
-      return '${plate.substring(0, 3)}-${plate.substring(3)}'; // Formato AAA-1A23
+      return '${plate.substring(0, 3)}-${plate.substring(3)}'; 
     }
   }
 
-  return plate; // Mantém o formato enquanto o usuário digita
+if (plate.length == 7) {
+    if (RegExp(r'^[A-Z]{3}\d{4}$').hasMatch(plate)) {
+      return '${plate.substring(0, 3)}-${plate.substring(3, 7)}';
+    } else if (RegExp(r'^[A-Z]{3}\d[A-Z]\d{2}$').hasMatch(plate)) {
+      return '${plate.substring(0, 3)}-${plate.substring(3)}'; 
+    }
+  }
+
+  return plate; 
 }
 }

@@ -68,8 +68,11 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                   child: Text("Cancelar")),
               ElevatedButton(
                 onPressed: () {
+                  // verificar se a placa ja esta na model e se é valida
+                  
+
                   var plate = context.read<PlateBloc>().state.plate;
-                  if (plate.isNotEmpty) {
+                  if (plate.isNotEmpty && context.read<PlateBloc>().state.isValid) {
                     widget.onConfirm(plate);
                     Navigator.pop(context);
                     plate = "";

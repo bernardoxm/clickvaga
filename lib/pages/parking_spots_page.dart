@@ -1,139 +1,71 @@
+import 'package:clickvagas/data/parking_spot_repository.dart';
 import 'package:clickvagas/models/parking_spot_model.dart';
 import 'package:clickvagas/models/transaction_model.dart';
+
 import 'package:clickvagas/widgets/config_welcome_widget.dart';
 import 'package:clickvagas/widgets/entry_dialog_widget.dart';
 import 'package:clickvagas/widgets/exit_dialog_widget.dart';
 import 'package:clickvagas/widgets/find_widget.dart';
 import 'package:clickvagas/widgets/parking_spot_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
 class ParkingSpotsPage extends StatefulWidget {
   const ParkingSpotsPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ParkingSpotsPageState createState() => _ParkingSpotsPageState();
 }
 
 class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
+  final ParkingSpotRepository _repository = ParkingSpotRepository();
   List<ParkingSpotModel> parkingSpots = [];
   List<ParkingSpotModel> filteredSpots = [];
   bool isSearching = false;
-
   int totalSpots = 0;
   int filter = 1;
   double filter2 = 4;
-  int filterStatus =
-      0; // 0 = Todos, 1 = Apenas Ocupados, 2 = Apenas Disponíveis
+  int filterStatus = 0; // 0 = Todos, 1 = Apenas Ocupados, 2 = Apenas Disponíveis
 
   @override
   void initState() {
     super.initState();
     _loadParkingSpots();
-    filteredSpots = List.from(parkingSpots);
   }
 
+  /// **Carrega as vagas do repositório**
   Future<void> _loadParkingSpots() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? savedSpots = prefs.getInt('totalSpots');
+    List<ParkingSpotModel> spots = await _repository.loadSpots();
+    setState(() {
+      parkingSpots = spots;
+      filteredSpots = spots;
+      totalSpots = spots.length;
+    });
 
-    if (savedSpots == null || savedSpots <= 0) {
+    if (totalSpots == 0) {
       _showConfigDialog();
-    } else {
-      setState(() {
-        totalSpots = savedSpots;
-        List<String>? savedData = prefs.getStringList('parkingSpots');
-        if (savedData != null) {
-          parkingSpots = savedData
-              .map((spot) => ParkingSpotModel.fromJson(json.decode(spot)))
-              .toList();
-        } else {
-          parkingSpots = List.generate(
-              totalSpots,
-              (index) => ParkingSpotModel(
-                  name: 'Vaga ${index + 1}',
-                  plate: '',
-                  isOccupied: false,
-                  entrydate: DateTime.now()));
-        }
-      });
     }
   }
 
-  Future<void> _saveParkingSpots() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> spotsData =
-        parkingSpots.map((spot) => json.encode(spot.toJson())).toList();
-    await prefs.setStringList('parkingSpots', spotsData);
-  }
 
   Future<void> _addNewSpot() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      totalSpots += 1;
-      parkingSpots.add(ParkingSpotModel(
-          name: 'Vaga $totalSpots',
-          plate: '',
-          isOccupied: false,
-          entrydate: DateTime.now()));
-    });
-    await prefs.setInt('totalSpots', totalSpots);
-    await _saveParkingSpots();
+    await _repository.addNewSpot(parkingSpots);
+    _loadParkingSpots();
   }
 
+ 
   Future<void> _removeLastSpot() async {
-    int indexToRemove = parkingSpots.lastIndexWhere((spot) => !spot.isOccupied);
-    if (indexToRemove == -1) {
-      return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Erro"),
-              content: Text("Não é possível remover uma vaga ocupada"),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text("Ok"),
-                ),
-              ],
-            );
-          });
-    }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      totalSpots -= 1;
-      parkingSpots.removeAt(indexToRemove);
-    });
-    if (totalSpots <= 0) {
-      _showConfigDialog();
-    } else {
-      await prefs.setInt('totalSpots', totalSpots);
-      await _saveParkingSpots();
+    try {
+      await _repository.removeLastSpot(parkingSpots);
+      _loadParkingSpots();
+    } catch (e) {
+      _showErrorDialog(e.toString());
     }
   }
 
-  List<ParkingSpotModel> getFilteredSpots() {
-    if (isSearching) {
-      return filteredSpots;
-    }
-
-    if (filterStatus == 1) {
-      return parkingSpots.where((spot) => spot.isOccupied).toList();
-    } else if (filterStatus == 2) {
-      return parkingSpots.where((spot) => !spot.isOccupied).toList();
-    } else {
-      return parkingSpots;
-    }
-  }
-// Dentro do setState() sempre garantir atualização
-
+ 
   Future<void> _showConfigDialog() async {
     TextEditingController spotsController = TextEditingController();
-    setState(() {
-      filteredSpots = getFilteredSpots();
-    });
+
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -141,10 +73,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
         return Center(
           child: SingleChildScrollView(
             child: AlertDialog(
-              title: Text(
-                "Vamos comecar!!!",
-                textAlign: TextAlign.center,
-              ),
+              title: Text("Vamos começar!!!", textAlign: TextAlign.center),
               content: ConfigWelcomeWidget(spotsController: spotsController),
               actions: [
                 Center(
@@ -152,23 +81,8 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                     onPressed: () async {
                       int? spots = int.tryParse(spotsController.text);
                       if (spots != null && spots > 0) {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        await prefs.setInt('totalSpots', spots);
-
-                        setState(() {
-                          totalSpots = spots;
-                          parkingSpots = List.generate(
-                              totalSpots,
-                              (index) => ParkingSpotModel(
-                                  name: 'vaga ${index + 1}',
-                                  plate: '',
-                                  isOccupied: false,
-                                  entrydate: DateTime.now()));
-                        });
-
-                        await _saveParkingSpots();
-                        // ignore: use_build_context_synchronously
+                        await _repository.loadSpots();
+                        _loadParkingSpots();
                         Navigator.pop(context);
                       }
                     },
@@ -183,15 +97,76 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
+  /// **Mostra um erro em um diálogo**
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Erro"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Ok"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// **Registra a entrada de um veículo**
+  void _showEntryDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return EntryDialogWidget(
+          onConfirm: (plate) async {
+            try {
+              await _repository.registryEntry(parkingSpots, index, plate);
+              _loadParkingSpots();
+            } catch (e) {
+              _showErrorDialog(e.toString());
+            }
+          },
+        );
+      },
+    );
+  }
+
+  /// **Registra a saída de um veículo**
+  void _showExitDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return ExitDialogWidget(
+          plate: parkingSpots[index].plate,
+          entryTime: parkingSpots[index].entrydate!,
+          onConfirm: () async {
+            await _repository.registryExit(parkingSpots, index);
+            _loadParkingSpots();
+          },
+        );
+      },
+    );
+  }
+
+  /// **Filtra as vagas com base no estado atual**
+  List<ParkingSpotModel> getFilteredSpots() {
+    if (isSearching) return filteredSpots;
+    if (filterStatus == 1) return parkingSpots.where((spot) => spot.isOccupied).toList();
+    if (filterStatus == 2) return parkingSpots.where((spot) => !spot.isOccupied).toList();
+    return parkingSpots;
+  }
+
   @override
   Widget build(BuildContext context) {
     int spotsOccupied = parkingSpots.where((spot) => spot.isOccupied).length;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Pátio",
-        ),
+        title: Text("Pátio"),
         actions: [
           PopupMenuButton<String>(
             icon: Icon(Icons.menu),
@@ -200,71 +175,20 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                 _addNewSpot();
               } else if (choice == "remove") {
                 _removeLastSpot();
-              } else if (choice == "viewSquare") {
-                setState(() {
-                  filter = 2;
-                  filter2 = 1.9;
-                });
-              } else if (choice == "viewLines") {
-                setState(() {
-                  filter = 1;
-                  filter2 = 4;
-                });
               } else if (choice == "filterAll") {
-                setState(() {
-                  filterStatus = 0;
-                });
+                setState(() => filterStatus = 0);
               } else if (choice == "filterOccupied") {
-                setState(() {
-                  filterStatus = 1;
-                });
+                setState(() => filterStatus = 1);
               } else if (choice == "filterAvailable") {
-                setState(() {
-                  filterStatus = 2;
-                });
+                setState(() => filterStatus = 2);
               }
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                  value: "add",
-                  child: ListTile(
-                      leading: Icon(Icons.add), title: Text("Adicionar Vaga"))),
-              PopupMenuItem<String>(
-                  value: "remove",
-                  child: ListTile(
-                      leading: Icon(Icons.remove),
-                      title: Text("Remover Última Vaga"))),
-              PopupMenuItem<String>(
-                value: "viewSquare",
-                child: ListTile(
-                    leading: Icon(Icons.apps_rounded),
-                    title: Text("Visualizar em Quadrados")),
-              ),
-              PopupMenuItem<String>(
-                value: "viewLines",
-                child: ListTile(
-                  leading: Icon(Icons.article_outlined),
-                  title: Text("Visualizar em Linhas"),
-                ),
-              ),
-              PopupMenuItem<String>(
-                  value: "filterAll",
-                  child: ListTile(
-                    leading: Icon(Icons.car_repair),
-                    title: Text("Mostrar Todas as Vagas"),
-                  )),
-              PopupMenuItem<String>(
-                  value: "filterOccupied",
-                  child: ListTile(
-                    leading: Icon(Icons.directions_bus),
-                    title: Text("Mostrar Apenas Vagas Ocupadas"),
-                  )),
-              PopupMenuItem<String>(
-                  value: "filterAvailable",
-                  child: ListTile(
-                    leading: Icon(Icons.directions_bus_filled_outlined),
-                    title: Text("Mostrar Apenas Vagas Disponíveis"),
-                  )),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: "add", child: ListTile(leading: Icon(Icons.add), title: Text("Adicionar Vaga"))),
+              PopupMenuItem(value: "remove", child: ListTile(leading: Icon(Icons.remove), title: Text("Remover Última Vaga"))),
+              PopupMenuItem(value: "filterAll", child: ListTile(leading: Icon(Icons.car_repair), title: Text("Mostrar Todas"))),
+              PopupMenuItem(value: "filterOccupied", child: ListTile(leading: Icon(Icons.directions_bus), title: Text("Mostrar Ocupadas"))),
+              PopupMenuItem(value: "filterAvailable", child: ListTile(leading: Icon(Icons.directions_bus_filled_outlined), title: Text("Mostrar Disponíveis"))),
             ],
           ),
         ],
@@ -277,12 +201,9 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
             onSearch: (String plate) {
               setState(() {
                 isSearching = plate.isNotEmpty;
-
-                filteredSpots = parkingSpots
-                    .where((spot) =>
-                        spot.plate.isNotEmpty &&
-                        spot.plate.toLowerCase().contains(plate.toLowerCase()))
-                    .toList();
+                filteredSpots = parkingSpots.where((spot) =>
+                    spot.plate.isNotEmpty &&
+                    spot.plate.toLowerCase().contains(plate.toLowerCase())).toList();
               });
             },
           ),
@@ -290,9 +211,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
             child: Padding(
               padding: EdgeInsets.all(10),
               child: getFilteredSpots().isEmpty
-                  ? Center(
-                      child: Text("Não há vagas disponíveis ou ocupadas"),
-                    )
+                  ? Center(child: Text("Não há vagas disponíveis ou ocupadas"))
                   : GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: filter,
@@ -302,20 +221,16 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                       ),
                       itemCount: getFilteredSpots().length,
                       itemBuilder: (context, index) {
-                        int originalIndex =
-                            parkingSpots.indexOf(getFilteredSpots()[index]);
                         return ParkingSpotCardWidget(
-                          index: originalIndex,
+                          index: index,
                           isOccupied: getFilteredSpots()[index].isOccupied,
                           plate: getFilteredSpots()[index].plate,
                           entryTime: getFilteredSpots()[index].entrydate,
                           onTap: () {
                             if (getFilteredSpots()[index].isOccupied) {
-                              _showExitDialog(parkingSpots
-                                  .indexOf(getFilteredSpots()[index]));
+                              _showExitDialog(index);
                             } else {
-                              _showEntryDialog(parkingSpots
-                                  .indexOf(getFilteredSpots()[index]));
+                              _showEntryDialog(index);
                             }
                           },
                         );
@@ -325,85 +240,6 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Future<void> _registerEntry(String plate) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    TransactionModel newTransaction = TransactionModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      plate: plate,
-      entrydate: DateTime.now(),
-    );
-
-    List<String>? savedData = prefs.getStringList('parkingTransactions') ?? [];
-    savedData.add(json.encode(newTransaction.toJson()));
-
-    await prefs.setStringList('parkingTransactions', savedData);
-  }
-
-  void _showEntryDialog(int index) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return EntryDialogWidget(
-          onConfirm: (plate) {
-            setState(() {
-              parkingSpots[index].isOccupied = true;
-              parkingSpots[index].plate = plate;
-              parkingSpots[index].entrydate = DateTime.now();
-
-              _saveParkingSpots();
-              _registerEntry(plate);
-            });
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> _registerExit(String plate) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? savedData = prefs.getStringList('parkingTransactions');
-
-    if (savedData == null) return;
-
-    List<TransactionModel> transactions = savedData
-        .map((t) => TransactionModel.fromJson(json.decode(t)))
-        .toList();
-
-    for (var transaction in transactions) {
-      if (transaction.plate == plate && transaction.endDate == null) {
-        transaction.endDate = DateTime.now();
-        break;
-      }
-    }
-
-    List<String> updatedData =
-        transactions.map((t) => json.encode(t.toJson())).toList();
-    await prefs.setStringList('parkingTransactions', updatedData);
-  }
-
-  void _showExitDialog(int index) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return ExitDialogWidget(
-          plate: parkingSpots[index].plate,
-          entryTime: parkingSpots[index].entrydate!,
-          onConfirm: () {
-            setState(() {
-              parkingSpots[index].isOccupied = false;
-
-              parkingSpots[index].entrydate;
-              _saveParkingSpots();
-              _registerExit(parkingSpots[index].plate);
-              parkingSpots[index].plate = "";
-            });
-          },
-        );
-      },
     );
   }
 }

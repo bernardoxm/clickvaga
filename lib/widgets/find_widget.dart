@@ -30,7 +30,7 @@ class _FindWidgetState extends State<FindWidget> {
     return Container(
       height: 110,
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(68, 194, 253, 1),
+        color: Color.fromRGBO(69, 77, 102, 1),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(10),
           bottomRight: Radius.circular(10),
