@@ -1,5 +1,4 @@
 import 'package:clickvaga/bloc/bloc_plate/plate_bloc.dart';
-import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
 import 'package:clickvaga/pages/Navi_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

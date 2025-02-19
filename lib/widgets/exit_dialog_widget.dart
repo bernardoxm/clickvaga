@@ -1,7 +1,4 @@
-import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
-import 'package:clickvaga/bloc/bloc_parking/parking_event.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 // ExitDialogWidget is a StatelessWidget that shows a dialog to register a vehicle exit.
@@ -16,6 +13,9 @@ import 'package:intl/intl.dart';
 // A função onConfirm é passada como parâmetro para o construtor do widget.
 
 class ExitDialogWidget extends StatelessWidget {
+
+  
+
   final String plate;
   final DateTime entryTime;
   final VoidCallback onConfirm;

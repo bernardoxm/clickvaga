@@ -13,14 +13,14 @@
 
 
 class TransactionModel {
-  final String id;
+  final String? id;
   final String? plate;
   final DateTime? entrydate;
    DateTime? endDate;
 
 
   TransactionModel(
-      {required this.id,
+      { this.id,
   
       this.plate,
       this.entrydate,

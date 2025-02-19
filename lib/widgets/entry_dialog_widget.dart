@@ -1,9 +1,6 @@
 import 'package:clickvaga/bloc/bloc_plate/plate_bloc.dart';
 import 'package:clickvaga/bloc/bloc_plate/plate_event.dart';
-import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
-import 'package:clickvaga/bloc/bloc_parking/parking_event.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:brasil_fields/brasil_fields.dart';
@@ -25,7 +22,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
       return AlertDialog(
         title: Text('Entrada de veículo'),
         content: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.13,
+          height: MediaQuery.of(context).size.height * 0.14,
           width: MediaQuery.of(context).size.height * 1,
           child: Column(
             spacing: 10,
@@ -60,7 +57,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
           ),
         ),
         actions: [
-          Row(
+          Row( mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
                   onPressed: () {
@@ -79,7 +76,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                     context.read<PlateBloc>().add(UpdatePlate(""));
                   }
                 },
-                child: Text("Registrar Entrada"),
+                child: Text("Registrar"),
               ),
             ],
           )

@@ -1,34 +1,27 @@
-// This file contains the model for the parking spot
-// Este arquivo contém o modelo para a vaga de estacionamento
-// The ParkingSpotModel class has the attributes name, plate, and isOccupied
-// A classe ParkingSpotModel tem os atributos name, plate e isOccupied
-// The name attribute is a string that represents the parking spot name
-// O atributo name é uma string que representa o nome da vaga de estacionamento
-// The plate attribute is a string that represents the vehicle plate parked in the spot
-// O atributo plate é uma string que representa a placa do veículo estacionado na vaga
-// The isOccupied attribute is a boolean that indicates if the spot is occupied
-// O atributo isOccupied é um booleano que indica se a vaga está ocupada
-// The ParkingSpotModel class has a constructor that receives the values for the attributes name, plate, and isOccupied
-// A classe ParkingSpotModel tem um construtor que recebe os valores para os atributos name, plate e isOccupied
+
 
 class ParkingSpotModel {
   String name;
-  String? plate;
-  bool? isOccupied;
+  String plate;
+  bool isOccupied;
+  DateTime? entrydate; // Alterado para DateTime?
+  DateTime? exitdate;  // Adicionado DateTime?
 
-
-  ParkingSpotModel(
-      {required this.name,
-      this.plate,
-       this.isOccupied,
+  ParkingSpotModel({
+    required this.name,
+    required this.plate,
+    required this.isOccupied,
+    this.entrydate,
+    this.exitdate,
   });
 
   factory ParkingSpotModel.fromJson(Map<String, dynamic> json) {
     return ParkingSpotModel(
       name: json['name'],
       plate: json['plate'],
-      isOccupied: json['isOccupied'],
-  
+      isOccupied: json['isOccupied'] ?? false,
+      entrydate: json['entrydate'] != null ? DateTime.parse(json['entrydate']) : null,
+      exitdate: json['exitdate'] != null ? DateTime.parse(json['exitdate']) : null,
     );
   }
 
@@ -37,7 +30,8 @@ class ParkingSpotModel {
       'name': name,
       'plate': plate,
       'isOccupied': isOccupied,
-
+      'entrydate': entrydate?.toIso8601String(),
+      'exitdate': exitdate?.toIso8601String(),
     };
   }
 }

@@ -1,69 +1,13 @@
-import 'package:clickvaga/bloc/bloc_parking/parking_bloc.dart';
-import 'package:clickvaga/bloc/bloc_parking/parking_state.dart';
+import 'package:clickvaga/models/parking_spot_model.dart';
 import 'package:clickvaga/models/transaction_model.dart';
 import 'package:clickvaga/widgets/config_welcome_widget.dart';
 import 'package:clickvaga/widgets/entry_dialog_widget.dart';
 import 'package:clickvaga/widgets/exit_dialog_widget.dart';
+import 'package:clickvaga/widgets/find_widget.dart';
 import 'package:clickvaga/widgets/parking_spot_card_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
-// ParkingSpot is a class that represents a parking spot.
-// ParkingSpot é uma classe que representa uma vaga de estacionamento.
-// It has three properties: isOccupied, plate, and entryTime.
-// Possui três propriedades: isOccupied, plate e entryTime.
-// isOccupied is a boolean that indicates if the spot is occupied or available.
-// isOccupied é um booleano que indica se a vaga está ocupada ou disponível.
-// plate is a string that represents the vehicle plate parked in the spot.
-// plate é uma string que representa a placa do veículo estacionado na vaga.
-// entryTime is a DateTime that represents the time when the vehicle entered the spot.
-// entryTime é um DateTime que representa o horário em que o veículo entrou na vaga.
-// The ParkingSpot class has a toMap
-// method that converts the object to a map of key-value pairs.
-// A classe ParkingSpot tem um método toMap que converte o objeto em um mapa de pares chave-valor.
-// The ParkingSpot class has a fromMap method that creates a ParkingSpot object from a map.
-// A classe ParkingSpot tem um método fromMap que cria um objeto ParkingSpot a partir de um mapa.
-// The ParkingSpotsPage is a StatefulWidget that shows a list of parking spots.
-// A classe ParkingSpotsPage é um StatefulWidget que exibe uma lista de vagas de estacionamento.
-// It has a list of ParkingSpot objects and a totalSpots variable.
-// Possui uma lista de objetos ParkingSpot e uma variável totalSpots.
-// The _loadParkingSpots method loads the parking spots from SharedPreferences.
-// O método _loadParkingSpots carrega as vagas de estacionamento do SharedPreferences.
-// The _saveParkingSpots method saves the parking spots to SharedPreferences.
-// O método _saveParkingSpots salva as vagas de estacionamento no SharedPreferences.
-// The _addNewSpot method adds a new parking spot to the list.
-// O método _addNewSpot adiciona uma nova vaga de estacionamento à lista.
-// The _removeLastSpot method removes the last available parking spot from the list.
-// O método _removeLastSpot remove a última vaga de estacionamento disponível da lista.
-// The getFilteredSpots method returns a list of parking spots based on the filterStatus.
-// O método getFilteredSpots retorna uma lista de vagas de estacionamento com base no filterStatus.
-
-class ParkingSpot {
-  bool isOccupied;
-  String plate;
-  DateTime? entryTime;
-
-  ParkingSpot({this.isOccupied = false, this.plate = "", this.entryTime});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'isOccupied': isOccupied,
-      'plate': plate,
-      'entryTime': entryTime?.toIso8601String(),
-    };
-  }
-
-  factory ParkingSpot.fromMap(Map<String, dynamic> map) {
-    return ParkingSpot(
-      isOccupied: map['isOccupied'] ?? false,
-      plate: map['plate'] ?? "",
-      entryTime:
-          map['entryTime'] != null ? DateTime.parse(map['entryTime']) : null,
-    );
-  }
-}
 
 class ParkingSpotsPage extends StatefulWidget {
   const ParkingSpotsPage({super.key});
@@ -74,7 +18,10 @@ class ParkingSpotsPage extends StatefulWidget {
 }
 
 class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
-  List<ParkingSpot> parkingSpots = [];
+  List<ParkingSpotModel> parkingSpots = [];
+  List<ParkingSpotModel> filteredSpots = [];
+  bool isSearching = false;
+
   int totalSpots = 0;
   int filter = 1;
   double filter2 = 4;
@@ -85,6 +32,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   void initState() {
     super.initState();
     _loadParkingSpots();
+    filteredSpots = List.from(parkingSpots);
   }
 
   Future<void> _loadParkingSpots() async {
@@ -99,10 +47,16 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
         List<String>? savedData = prefs.getStringList('parkingSpots');
         if (savedData != null) {
           parkingSpots = savedData
-              .map((spot) => ParkingSpot.fromMap(json.decode(spot)))
+              .map((spot) => ParkingSpotModel.fromJson(json.decode(spot)))
               .toList();
         } else {
-          parkingSpots = List.generate(totalSpots, (index) => ParkingSpot());
+          parkingSpots = List.generate(
+              totalSpots,
+              (index) => ParkingSpotModel(
+                  name: 'Vaga ${index + 1}',
+                  plate: '',
+                  isOccupied: false,
+                  entrydate: DateTime.now()));
         }
       });
     }
@@ -111,7 +65,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   Future<void> _saveParkingSpots() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> spotsData =
-        parkingSpots.map((spot) => json.encode(spot.toMap())).toList();
+        parkingSpots.map((spot) => json.encode(spot.toJson())).toList();
     await prefs.setStringList('parkingSpots', spotsData);
   }
 
@@ -119,7 +73,11 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       totalSpots += 1;
-      parkingSpots.add(ParkingSpot());
+      parkingSpots.add(ParkingSpotModel(
+          name: 'Vaga $totalSpots',
+          plate: '',
+          isOccupied: false,
+          entrydate: DateTime.now()));
     });
     await prefs.setInt('totalSpots', totalSpots);
     await _saveParkingSpots();
@@ -156,7 +114,11 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     }
   }
 
-  List<ParkingSpot> getFilteredSpots() {
+  List<ParkingSpotModel> getFilteredSpots() {
+    if (isSearching) {
+      return filteredSpots;
+    }
+
     if (filterStatus == 1) {
       return parkingSpots.where((spot) => spot.isOccupied).toList();
     } else if (filterStatus == 2) {
@@ -165,10 +127,13 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
       return parkingSpots;
     }
   }
+// Dentro do setState() sempre garantir atualização
 
   Future<void> _showConfigDialog() async {
     TextEditingController spotsController = TextEditingController();
- 
+    setState(() {
+      filteredSpots = getFilteredSpots();
+    });
     await showDialog(
       context: context,
       barrierDismissible: false,
@@ -180,7 +145,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                 "Vamos comecar!!!",
                 textAlign: TextAlign.center,
               ),
-              content:ConfigWelcomeWidget(spotsController: spotsController),
+              content: ConfigWelcomeWidget(spotsController: spotsController),
               actions: [
                 Center(
                   child: ElevatedButton(
@@ -194,7 +159,12 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                         setState(() {
                           totalSpots = spots;
                           parkingSpots = List.generate(
-                              totalSpots, (index) => ParkingSpot());
+                              totalSpots,
+                              (index) => ParkingSpotModel(
+                                  name: 'vaga ${index + 1}',
+                                  plate: '',
+                                  isOccupied: false,
+                                  entrydate: DateTime.now()));
                         });
 
                         await _saveParkingSpots();
@@ -215,14 +185,10 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<ParkingSpot> filteredSpots = getFilteredSpots();
-    if (totalSpots == 0) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    int spotsOccupied = parkingSpots.where((spot) => spot.isOccupied).length;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
         title: Text(
           "Pátio",
         ),
@@ -305,12 +271,27 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
       ),
       body: Column(
         children: [
+          FindWidget(
+            totalSpots: totalSpots,
+            spotsOccupied: spotsOccupied,
+            onSearch: (String plate) {
+              setState(() {
+                isSearching = plate.isNotEmpty;
+
+                filteredSpots = parkingSpots
+                    .where((spot) =>
+                        spot.plate.isNotEmpty &&
+                        spot.plate.toLowerCase().contains(plate.toLowerCase()))
+                    .toList();
+              });
+            },
+          ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(10),
-              child: filteredSpots.isEmpty
+              child: getFilteredSpots().isEmpty
                   ? Center(
-                      child: Text("Não a vagas disponíveis ou ocupadas"),
+                      child: Text("Não há vagas disponíveis ou ocupadas"),
                     )
                   : GridView.builder(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -319,22 +300,22 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                         mainAxisSpacing: 10,
                         childAspectRatio: filter2,
                       ),
-                      itemCount: filteredSpots.length,
+                      itemCount: getFilteredSpots().length,
                       itemBuilder: (context, index) {
                         int originalIndex =
-                            parkingSpots.indexOf(filteredSpots[index]);
+                            parkingSpots.indexOf(getFilteredSpots()[index]);
                         return ParkingSpotCardWidget(
                           index: originalIndex,
-                          isOccupied: filteredSpots[index].isOccupied,
-                          plate: filteredSpots[index].plate,
-                          entryTime: filteredSpots[index].entryTime,
+                          isOccupied: getFilteredSpots()[index].isOccupied,
+                          plate: getFilteredSpots()[index].plate,
+                          entryTime: getFilteredSpots()[index].entrydate,
                           onTap: () {
-                            if (filteredSpots[index].isOccupied) {
-                              _showExitDialog(
-                                  parkingSpots.indexOf(filteredSpots[index]));
+                            if (getFilteredSpots()[index].isOccupied) {
+                              _showExitDialog(parkingSpots
+                                  .indexOf(getFilteredSpots()[index]));
                             } else {
-                              _showEntryDialog(
-                                  parkingSpots.indexOf(filteredSpots[index]));
+                              _showEntryDialog(parkingSpots
+                                  .indexOf(getFilteredSpots()[index]));
                             }
                           },
                         );
@@ -371,7 +352,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
             setState(() {
               parkingSpots[index].isOccupied = true;
               parkingSpots[index].plate = plate;
-              parkingSpots[index].entryTime = DateTime.now();
+              parkingSpots[index].entrydate = DateTime.now();
 
               _saveParkingSpots();
               _registerEntry(plate);
@@ -410,12 +391,12 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
       builder: (context) {
         return ExitDialogWidget(
           plate: parkingSpots[index].plate,
-          entryTime: parkingSpots[index].entryTime!,
+          entryTime: parkingSpots[index].entrydate!,
           onConfirm: () {
             setState(() {
               parkingSpots[index].isOccupied = false;
 
-              parkingSpots[index].entryTime = null;
+              parkingSpots[index].entrydate;
               _saveParkingSpots();
               _registerExit(parkingSpots[index].plate);
               parkingSpots[index].plate = "";

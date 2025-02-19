@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 
 class ConfigWelcomeWidget extends StatefulWidget {
   const ConfigWelcomeWidget({
@@ -34,17 +34,17 @@ class _ConfigWelcomeWidgetState extends State<ConfigWelcomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
         spacing: 10,
         children: [
           SizedBox(
+            height: 100,
+            width: 100,
             child: Image(
               image: AssetImage('assets/iconApp.png'),
             ),
-            height: 100,
-            width: 100,
           ),
           Text(
             'Bem Vindo ao ClickVaga!',
