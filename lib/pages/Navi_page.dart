@@ -27,7 +27,7 @@ class _NaviPageState extends State<NaviPage> {
     });
   }
 
-  //Return Scaffold with BottomNavigationBar and the selected page Retorna Scaffold com BottomNavigationBar e a página selecionada
+
 
   @override
   Widget build(BuildContext context) {

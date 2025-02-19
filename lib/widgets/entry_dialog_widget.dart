@@ -57,7 +57,8 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
           ),
         ),
         actions: [
-          Row( mainAxisAlignment: MainAxisAlignment.center,
+          Row( spacing:20, 
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
                   onPressed: () {
@@ -65,7 +66,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                     context.read<PlateBloc>().add(UpdatePlate(""));
                     Navigator.pop(context);
                   },
-                  child: Text("Cancelar")),
+                  child: Text("Cancelar", style: TextStyle(color: Colors.red),)),
               ElevatedButton(
                 onPressed: () {
                   // verificar se a placa ja esta na model e se é valida
@@ -79,7 +80,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                     context.read<PlateBloc>().add(UpdatePlate(""));
                   }
                 },
-                child: Text("Registrar"),
+                child: Text("Entrada", style: TextStyle(color: Colors.white),),
               ),
             ],
           )

@@ -1,8 +1,8 @@
 import 'package:clickvagas/data/parking_spot_repository.dart';
 import 'package:clickvagas/models/parking_spot_model.dart';
-import 'package:clickvagas/models/transaction_model.dart';
 
-import 'package:clickvagas/widgets/config_welcome_widget.dart';
+
+import 'package:clickvagas/widgets/created_parking_spots_widget.dart';
 import 'package:clickvagas/widgets/entry_dialog_widget.dart';
 import 'package:clickvagas/widgets/exit_dialog_widget.dart';
 import 'package:clickvagas/widgets/find_widget.dart';
@@ -42,7 +42,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     });
 
     if (totalSpots == 0) {
-      _showConfigDialog();
+      _createdParkingSpots();
     }
   }
 
@@ -63,41 +63,41 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   }
 
  
-  Future<void> _showConfigDialog() async {
-    TextEditingController spotsController = TextEditingController();
+ Future<void> _createdParkingSpots() async {
+  TextEditingController spotsController = TextEditingController();
 
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return Center(
-          child: SingleChildScrollView(
-            child: AlertDialog(
-              title: Text("Vamos começar!!!", textAlign: TextAlign.center),
-              content: ConfigWelcomeWidget(spotsController: spotsController),
-              actions: [
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      int? spots = int.tryParse(spotsController.text);
-                      if (spots != null && spots > 0) {
-                        await _repository.loadSpots();
-                        _loadParkingSpots();
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text("Salvar"),
-                  ),
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return Center(
+        child: SingleChildScrollView(
+          child: AlertDialog(
+            title: Text("Vamos começar!!!", textAlign: TextAlign.center),
+            content: CreatedParkingSpotsWidget(spotsController: spotsController),
+            actions: [
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    int? spots = int.tryParse(spotsController.text);
+                    if (spots != null && spots > 0) {
+                      await _repository.initializeParkingSpots(spots); 
+                      await _loadParkingSpots(); 
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Text("Salvar", style: TextStyle(color: Colors.white),),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
-  /// **Mostra um erro em um diálogo**
+
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -116,7 +116,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
-  /// **Registra a entrada de um veículo**
+
   void _showEntryDialog(int index) {
     showDialog(
       context: context,
@@ -135,7 +135,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
-  /// **Registra a saída de um veículo**
+
   void _showExitDialog(int index) {
     showDialog(
       context: context,
@@ -152,7 +152,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
-  /// **Filtra as vagas com base no estado atual**
+
   List<ParkingSpotModel> getFilteredSpots() {
     if (isSearching) return filteredSpots;
     if (filterStatus == 1) return parkingSpots.where((spot) => spot.isOccupied).toList();

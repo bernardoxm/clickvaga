@@ -4,8 +4,8 @@ class ParkingSpotModel {
   String name;
   String plate;
   bool isOccupied;
-  DateTime? entrydate; // Alterado para DateTime?
-  DateTime? exitdate;  // Adicionado DateTime?
+  DateTime? entrydate; 
+  DateTime? exitdate;  
 
   ParkingSpotModel({
     required this.name,

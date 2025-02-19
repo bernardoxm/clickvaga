@@ -27,6 +27,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ClickVagas',
       theme: ThemeData(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            textStyle: WidgetStateProperty.all(
+              TextStyle(
+                color: Colors.white,
+                fontFamily: 'Montserrat',
+              ),
+            ),
+            backgroundColor: WidgetStateProperty.all(
+             Color.fromRGBO(69, 77, 102, 1), //cor da raro
+            ),
+          ),
+        ),
         appBarTheme: AppBarTheme(centerTitle: true,
 
           titleTextStyle: TextStyle(  

@@ -26,7 +26,6 @@ class _ReportTransactionsState extends State<ReportTransactions> {
     _loadTransactions();
   }
 
-// Load Trasactions  carregar transacao.
   Future<void> _loadTransactions() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? savedData = prefs.getStringList('parkingTransactions');
@@ -40,7 +39,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
     }
   }
 
-// Filter date // filtrar datas.
+
   String _formatDuration(DateTime entry, DateTime? exit) {
     if (exit == null) return "Ainda no estacionamento";
     Duration duration = exit.difference(entry);
@@ -49,7 +48,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
     return "$hours horas e $minutes minutos";
   }
 
-// filter active and finished    filtrar ativos e finalizados
+
   List<TransactionModel> _getFilteredTransactions() {
     List<TransactionModel> filteredList = transactions;
 
@@ -61,7 +60,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
 
     if (selectedStartDate != null && selectedEndDate != null) {
       filteredList = filteredList.where((t) {
-        return t.entrydate!
+        return t.entrydate
                 .isAfter(selectedStartDate!.subtract(Duration(days: 1))) &&
             t.entrydate!.isBefore(selectedEndDate!.add(Duration(days: 1)));
       }).toList();
@@ -87,7 +86,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
         selectedEndDate = picked.end;
       });
 
-      // Exibir no formato brasileiro
+   
       String formattedStart = DateFormat("dd/MM/yyyy").format(picked.start);
       String formattedEnd = DateFormat("dd/MM/yyyy").format(picked.end);
 

@@ -31,7 +31,6 @@ class TransactionModel {
     );
   }
 
-  // Converter um JSON para TransactionModel
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     return TransactionModel(
       id: json['id'] as String,
@@ -43,7 +42,7 @@ class TransactionModel {
     );
   }
 
-  // Converter TransactionModel para JSON
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

@@ -5,6 +5,25 @@ import 'package:clickvagas/models/transaction_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ParkingSpotRepository {
+
+Future<void> initializeParkingSpots(int totalSpots) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  List<ParkingSpotModel> parkingSpots = List.generate(
+    totalSpots,
+    (index) => ParkingSpotModel(
+      name: 'Vaga ${index + 1}',
+      plate: '',
+      isOccupied: false,
+      entrydate: null,
+    ),
+  );
+
+  await prefs.setInt('totalSpots', totalSpots);
+  await saveSpots(parkingSpots);
+}
+
+
   Future<List<ParkingSpotModel>> loadSpots() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? totalSpots = prefs.getInt('totalSpots');
@@ -31,7 +50,7 @@ class ParkingSpotRepository {
     }
   }
 
-  /// **Salvar todas as vagas no armazenamento**
+
   Future<void> saveSpots(List<ParkingSpotModel> parkingSpots) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> spotsData =
@@ -39,7 +58,6 @@ class ParkingSpotRepository {
     await prefs.setStringList('parkingSpots', spotsData);
   }
 
-  /// **Verifica se a placa já está ocupando uma vaga**
   Future<bool> plateExists(String plate) async {
     List<ParkingSpotModel> spots = await loadSpots();
     return spots.any((spot) => spot.plate == plate && spot.isOccupied);

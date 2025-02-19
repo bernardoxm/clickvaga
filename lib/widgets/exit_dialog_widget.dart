@@ -1,16 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-// ExitDialogWidget is a StatelessWidget that shows a dialog to register a vehicle exit.
-// ExitDialogWidget é um StatelessWidget que exibe um diálogo para registrar a saída de um veículo.
-// The dialog shows the vehicle plate, entry time, exit time, and duration.
-// O diálogo mostra a placa do veículo, o horário de entrada, o horário de saída e a duração.
-// When the user clicks on the "Registrar saída" button, the onConfirm function is called.
-// Quando o usuário clica no botão "Registrar saída", a função onConfirm é chamada.
-// The dialog can be closed by clicking on the "Cancelar" button.
-// O diálogo pode ser fechado clicando no botão "Cancelar".
-// The onConfirm function is passed as a parameter to the widget constructor.
-// A função onConfirm é passada como parâmetro para o construtor do widget.
 
 class ExitDialogWidget extends StatelessWidget {
 
@@ -43,9 +33,12 @@ class ExitDialogWidget extends StatelessWidget {
       ),
       actions: [
 
-        Row(children: [TextButton(
+        Row( spacing: 20, 
+          mainAxisAlignment: MainAxisAlignment.center,
+          
+          children: [TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text("Cancelar"),
+          child: Text("Cancelar", style: TextStyle(color: Colors.red)),
         ),
         ElevatedButton(
           onPressed: () {
@@ -58,7 +51,7 @@ class ExitDialogWidget extends StatelessWidget {
             }
             onConfirm();
           },
-          child: Text("Registrar Saída"),
+          child: Text("Saída",style: TextStyle(color: Colors.white),),
         ),],),
         
       ],

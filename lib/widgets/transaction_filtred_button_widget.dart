@@ -12,10 +12,7 @@ class TransactionFiltredButtonWidget extends StatelessWidget {
     this.onDateFilterSelected, 
   });
 
-  // Add the new option to the PopupMenuButton widget
-  // and call the onDateFilterSelected function when it's selected 
-  //Adiciona a nova opção ao widget PopupMenuButton e chama a função 
-  //onDateFilterSelected quando ela é selecionada
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +29,7 @@ class TransactionFiltredButtonWidget extends StatelessWidget {
         _menuItem("filterAll", Icons.dynamic_feed_rounded, "Mostrar Todos"),
         _menuItem("filterFinished", Icons.directions_bus_filled_rounded, "Mostrar Apenas Finalizados"),
         _menuItem("filterActive", Icons.directions_bus_outlined, "Mostrar Apenas Ativos"),
-        _menuItem("filterByDate", Icons.date_range, "Filtrar por Data"), // Add this option
+        _menuItem("filterByDate", Icons.date_range, "Filtrar por Data"), 
       ],
     );
   }

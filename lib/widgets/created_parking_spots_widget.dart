@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
-class ConfigWelcomeWidget extends StatefulWidget {
-  const ConfigWelcomeWidget({
+class CreatedParkingSpotsWidget extends StatefulWidget {
+  const CreatedParkingSpotsWidget({
     super.key,
     required this.spotsController,
   });
@@ -11,25 +10,24 @@ class ConfigWelcomeWidget extends StatefulWidget {
   final TextEditingController spotsController;
 
   @override
-  State<ConfigWelcomeWidget> createState() => _ConfigWelcomeWidgetState();
+  State<CreatedParkingSpotsWidget> createState() => _CreatedParkingSpotsWidgetState();
 }
 
-class _ConfigWelcomeWidgetState extends State<ConfigWelcomeWidget> {
+class _CreatedParkingSpotsWidgetState extends State<CreatedParkingSpotsWidget> {
   @override
   void initState() {
     super.initState();
-    // Adiciona um listener para atualizar o estado enquanto o usuário digita
+   
     widget.spotsController.addListener(() {
       if (mounted) {
-        setState(() {}); // Atualiza o texto imediatamente ao digitar
+        setState(() {}); 
       }
     });
   }
 
   @override
   void dispose() {
-    widget.spotsController
-        .dispose(); // Libera a memória quando a tela for destruída
+    widget.spotsController.removeListener(() {}); 
     super.dispose();
   }
 
@@ -38,7 +36,6 @@ class _ConfigWelcomeWidgetState extends State<ConfigWelcomeWidget> {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.35,
       child: Column(
-        spacing: 10,
         children: [
           SizedBox(
             height: 100,
@@ -52,17 +49,19 @@ class _ConfigWelcomeWidgetState extends State<ConfigWelcomeWidget> {
             textAlign: TextAlign.center,
           ),
           Text(
-            'Para começar, informe o número de vagas disponíveis no seu estacionamento: ${widget.spotsController.text.isEmpty ? 0 : widget.spotsController.text} Vagas',
+            'Para começar, informe o número de vagas disponíveis no seu estacionamento: '
+            '${widget.spotsController.text.isEmpty ? 0 : widget.spotsController.text} Vagas',
             textAlign: TextAlign.center,
           ),
           TextFormField(
             controller: widget.spotsController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: "Número de vagas",), textAlign: TextAlign.center, inputFormatters: [
-    FilteringTextInputFormatter.digitsOnly, 
-    LengthLimitingTextInputFormatter(3),
-    
-  ],
+            decoration: InputDecoration(labelText: "Número de vagas"),
+            textAlign: TextAlign.center,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(3),
+            ],
           ),
         ],
       ),
