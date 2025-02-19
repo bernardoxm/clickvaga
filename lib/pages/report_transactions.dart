@@ -1,6 +1,6 @@
-import 'package:clickvaga/models/transaction_model.dart';
-import 'package:clickvaga/widgets/transaction_card_widget.dart';
-import 'package:clickvaga/widgets/transaction_filtred_button_widget.dart';
+import 'package:clickvagas/models/transaction_model.dart';
+import 'package:clickvagas/widgets/transaction_card_widget.dart';
+import 'package:clickvagas/widgets/transaction_filtred_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';

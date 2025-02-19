@@ -1,46 +1,55 @@
-// Modelo de transação
-// A classe TransactionModel representa uma transação de estacionamento.  
-// A classe possui os atributos id, plate, entrydate e endDate.
-// O atributo id é uma string que identifica a transação.
-// O atributo plate é uma string que representa a placa do veículo.
-// O atributo entrydate é um DateTime que representa a data de entrada do veículo.
-// O atributo endDate é um DateTime que representa a data de saída do veículo.
-// A classe possui um construtor que recebe os valores dos atributos id, plate, entrydate e endDate.
-// A classe possui um método toJson
-// A classe possui um método fromJson
-// O método fromJson recebe um mapa de strings e dinâmicos e retorna uma instância de TransactionModel.
-// O método toJson retorna um mapa de strings e dinâmicos com os valores dos atributos da instância de TransactionModel.
-
-
 class TransactionModel {
   final String id;
-  final String? plate;
-  final DateTime? entrydate;
-   DateTime? endDate;
+  final String plate;
+  final DateTime entrydate;
+  DateTime? endDate;
+
+  TransactionModel({
+    required this.id,
+    required this.plate,
+    required this.entrydate,
+    this.endDate,
+  });
 
 
-  TransactionModel(
-      {required this.id,
-  
-      this.plate,
-      this.entrydate,
-      this.endDate});
+  bool isActive() {
+    return endDate == null;
+  }
 
-  TransactionModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
 
-        plate = json['plate'],
-        entrydate = json['date'] != null ? DateTime.parse(json['date']) : null,
-        endDate = json['finalDate'] != null
-            ? DateTime.parse(json['finalDate'])
-            : null;
+  TransactionModel copyWith({
+    String? id,
+    String? plate,
+    DateTime? entrydate,
+    DateTime? endDate,
+  }) {
+    return TransactionModel(
+      id: id ?? this.id,
+      plate: plate ?? this.plate,
+      entrydate: entrydate ?? this.entrydate,
+      endDate: endDate ?? this.endDate,
+    );
+  }
 
+  // Converter um JSON para TransactionModel
+  factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    return TransactionModel(
+      id: json['id'] as String,
+      plate: json['plate'] as String,
+      entrydate: json['entrydate'] != null
+          ? DateTime.parse(json['entrydate'])
+          : DateTime.now(), // Se não tiver data de entrada, assume agora
+      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
+    );
+  }
+
+  // Converter TransactionModel para JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'plate': plate,
-      'date': entrydate?.toIso8601String(),
-      'finalDate': endDate?.toIso8601String(),
+      'entrydate': entrydate.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
     };
   }
 }

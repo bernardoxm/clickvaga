@@ -1,6 +1,6 @@
-
-import 'package:clickvaga/pages/report_transactions.dart';
-import 'package:clickvaga/pages/parking_spots_page.dart';
+// ignore: file_names
+import 'package:clickvagas/pages/report_transactions.dart';
+import 'package:clickvagas/pages/parking_spots_page.dart';
 import 'package:flutter/material.dart';
 
 class NaviPage extends StatefulWidget {

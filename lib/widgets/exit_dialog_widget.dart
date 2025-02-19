@@ -1,8 +1,5 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 
 // ExitDialogWidget is a StatelessWidget that shows a dialog to register a vehicle exit.
 // ExitDialogWidget é um StatelessWidget que exibe um diálogo para registrar a saída de um veículo.
@@ -16,42 +13,61 @@ import 'package:intl/intl.dart';
 // A função onConfirm é passada como parâmetro para o construtor do widget.
 
 class ExitDialogWidget extends StatelessWidget {
+
+  
+
   final String plate;
   final DateTime entryTime;
   final VoidCallback onConfirm;
 
   const ExitDialogWidget(
-      {super.key, required this.plate, required this.entryTime, required this.onConfirm});
+      {super.key,
+      required this.plate,
+      required this.entryTime,
+      required this.onConfirm});
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(title: Text('Saída do veículo'),
-    content: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-       Text("Placa: $plate"),
+    return AlertDialog(
+      title: Text('Saída do veículo'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text("Placa: $plate"),
           Text("Entrada: ${DateFormat('dd/MM/yyyy HH:mm').format(entryTime)}"),
-          Text("Saída: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now())}"),
-        Text("Duração: ${_formatDuration(DateTime.now().difference(entryTime))}"),
+          Text(
+              "Saída: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now())}"),
+          Text(
+              "Duração: ${_formatDuration(DateTime.now().difference(entryTime))}"),
+        ],
+      ),
+      actions: [
 
-      ],
-    ),
-    actions: [
-      TextButton(
-        onPressed: () => Navigator.pop(context),
-        child: Text("Cancelar"),
-      ),
-      ElevatedButton(
-        onPressed: (){onConfirm();  Navigator.pop(context);},
+        Row(children: [TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: Text("Cancelar"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+          
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Veículo $plate saiu do estacionamento")),
+            );
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+            onConfirm();
+          },
+          child: Text("Registrar Saída"),
+        ),],),
         
-        child: Text("Registrar saída"),
-      ),
-    ],
+      ],
     );
-    
-  }String _formatDuration(Duration duration) {
-  int hours = duration.inHours;
-  int minutes = duration.inMinutes.remainder(60);
-  return "$hours horas e $minutes minutos";
-}
+  }
+
+  String _formatDuration(Duration duration) {
+    int hours = duration.inHours;
+    int minutes = duration.inMinutes.remainder(60);
+    return "$hours horas e $minutes minutos";
+  }
 }
