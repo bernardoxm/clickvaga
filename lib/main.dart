@@ -31,8 +31,7 @@ class MyApp extends StatelessWidget {
         appBarTheme: AppBarTheme(
           titleTextStyle: TextStyle(
               color: Colors.white,
-              fontFamily:
-                  GoogleFonts.montserratTextTheme().titleLarge!.fontFamily,
+              fontFamily: 'Montserrat',
               fontSize: 20),
           iconTheme: IconThemeData(color: Colors.white),
           backgroundColor: const Color.fromRGBO(68, 194, 253, 1), //cor da raro
