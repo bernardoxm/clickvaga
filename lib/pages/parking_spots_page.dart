@@ -6,6 +6,36 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+// ParkingSpot is a class that represents a parking spot.
+// ParkingSpot é uma classe que representa uma vaga de estacionamento.
+// It has three properties: isOccupied, plate, and entryTime.
+// Possui três propriedades: isOccupied, plate e entryTime.
+// isOccupied is a boolean that indicates if the spot is occupied or available.
+// isOccupied é um booleano que indica se a vaga está ocupada ou disponível.
+// plate is a string that represents the vehicle plate parked in the spot.
+// plate é uma string que representa a placa do veículo estacionado na vaga.
+// entryTime is a DateTime that represents the time when the vehicle entered the spot.
+// entryTime é um DateTime que representa o horário em que o veículo entrou na vaga.
+// The ParkingSpot class has a toMap
+// method that converts the object to a map of key-value pairs.
+// A classe ParkingSpot tem um método toMap que converte o objeto em um mapa de pares chave-valor.
+// The ParkingSpot class has a fromMap method that creates a ParkingSpot object from a map.
+// A classe ParkingSpot tem um método fromMap que cria um objeto ParkingSpot a partir de um mapa.
+// The ParkingSpotsPage is a StatefulWidget that shows a list of parking spots.
+// A classe ParkingSpotsPage é um StatefulWidget que exibe uma lista de vagas de estacionamento.
+// It has a list of ParkingSpot objects and a totalSpots variable.
+// Possui uma lista de objetos ParkingSpot e uma variável totalSpots.
+// The _loadParkingSpots method loads the parking spots from SharedPreferences.
+// O método _loadParkingSpots carrega as vagas de estacionamento do SharedPreferences.
+// The _saveParkingSpots method saves the parking spots to SharedPreferences.
+// O método _saveParkingSpots salva as vagas de estacionamento no SharedPreferences.
+// The _addNewSpot method adds a new parking spot to the list.
+// O método _addNewSpot adiciona uma nova vaga de estacionamento à lista.
+// The _removeLastSpot method removes the last available parking spot from the list.
+// O método _removeLastSpot remove a última vaga de estacionamento disponível da lista.
+// The getFilteredSpots method returns a list of parking spots based on the filterStatus.
+// O método getFilteredSpots retorna uma lista de vagas de estacionamento com base no filterStatus.
+
 class ParkingSpot {
   bool isOccupied;
   String plate;

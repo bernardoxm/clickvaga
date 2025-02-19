@@ -13,11 +13,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ClickVagas',
       theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(),
+        textTheme: GoogleFonts.montserratTextTheme(),//Font raro
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Color.fromRGBO(68, 194, 253, 1),
+          seedColor: Color.fromRGBO(68, 194, 253, 1), //cor da raro 
         ),
       ),
       locale: const Locale('pt', 'BR'),

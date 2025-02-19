@@ -3,14 +3,19 @@ import 'package:flutter/material.dart';
 class TransactionFiltredButtonWidget extends StatelessWidget {
   final int filterStatus;
   final Function(String) onFilterChange;
-  final Function()? onDateFilterSelected; // Add this parameter
+  final Function()? onDateFilterSelected;
 
   const TransactionFiltredButtonWidget({
     super.key,
     required this.filterStatus,
     required this.onFilterChange,
-    this.onDateFilterSelected, // Make it optional
+    this.onDateFilterSelected, 
   });
+
+  // Add the new option to the PopupMenuButton widget
+  // and call the onDateFilterSelected function when it's selected 
+  //Adiciona a nova opção ao widget PopupMenuButton e chama a função 
+  //onDateFilterSelected quando ela é selecionada
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,7 @@ class TransactionFiltredButtonWidget extends StatelessWidget {
       icon: Icon(Icons.filter_list),
       onSelected: (String choice) {
         if (choice == "filterByDate" && onDateFilterSelected != null) {
-          onDateFilterSelected!(); // Call only if it's not null
+          onDateFilterSelected!();
         } else {
           onFilterChange(choice);
         }

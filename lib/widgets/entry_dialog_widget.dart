@@ -10,6 +10,18 @@ class EntryDialogWidget extends StatefulWidget {
   State<EntryDialogWidget> createState() => _EntryDialogWidgetState();
 }
 
+
+// EntryDialogWidget is a StatefulWidget that shows a dialog to register a vehicle entry.
+// EntryDialogWidget é um StatefulWidget que exibe um diálogo para registrar a entrada de um veículo.
+// The dialog has a text field to enter the vehicle plate and a text with the current date and time.
+// O diálogo possui um campo de texto para inserir a placa do veículo e um texto com a data e hora atuais.
+// When the user clicks on the "Registrar entrada" button, the onConfirm function is called with the plate value.
+// Quando o usuário clica no botão "Registrar entrada", a função onConfirm é chamada com o valor da placa.
+// The dialog can be closed by clicking on the "Cancelar" button.
+// O diálogo pode ser fechado clicando no botão "Cancelar".
+// The onConfirm function is passed as a parameter to the widget constructor. 
+// A função onConfirm é passada como parâmetro para o construtor do widget.
+
 class _EntryDialogWidgetState extends State<EntryDialogWidget> {
   String plate = "";
   @override

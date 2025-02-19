@@ -27,15 +27,17 @@ class _NaviPageState extends State<NaviPage> {
     });
   }
 
+  //Return Scaffold with BottomNavigationBar and the selected page Retorna Scaffold com BottomNavigationBar e a página selecionada
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex], // Renderiza a tela atual
+      body: _pages[_selectedIndex], 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         backgroundColor: const Color.fromARGB(255, 241, 241, 241),
-        selectedItemColor:  Color.fromRGBO(68, 194, 253,1), // Cor do ícone selecionado
+        selectedItemColor:  Color.fromRGBO(68, 194, 253,1), 
         unselectedItemColor: Color.fromRGBO(69, 77, 102, 1),
         items: const [
           BottomNavigationBarItem(
