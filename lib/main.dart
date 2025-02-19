@@ -1,5 +1,7 @@
 import 'package:clickvaga/pages/Navi_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +15,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-       
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        textTheme: GoogleFonts.montserratTextTheme(),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromRGBO(68, 194, 253, 1),
+        ),
       ),
-      home:  NaviPage(),
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [
+        Locale('pt', 'BR'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: NaviPage(),
     );
   }
 }

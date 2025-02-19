@@ -94,19 +94,20 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   Future<void> _removeLastSpot() async {
     int indexToRemove = parkingSpots.lastIndexWhere((spot) => !spot.isOccupied);
     if (indexToRemove == -1) {
-
-      return showDialog(context: context, builder: (context) {
-        return AlertDialog(
-          title: Text("Erro"),
-          content: Text("Não é possível remover uma vaga ocupada"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("Ok"),
-            ),
-          ],
-        );
-      });
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Erro"),
+              content: Text("Não é possível remover uma vaga ocupada"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Ok"),
+                ),
+              ],
+            );
+          });
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -146,8 +147,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
             decoration: InputDecoration(labelText: "Número de vagas"),
           ),
           actions: [
-          
-            Center( 
+            Center(
               child: ElevatedButton(
                 onPressed: () async {
                   int? spots = int.tryParse(spotsController.text);
@@ -155,13 +155,13 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.setInt('totalSpots', spots);
-              
+
                     setState(() {
                       totalSpots = spots;
                       parkingSpots =
                           List.generate(totalSpots, (index) => ParkingSpot());
                     });
-              
+
                     await _saveParkingSpots();
                     // ignore: use_build_context_synchronously
                     Navigator.pop(context);
@@ -194,14 +194,28 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                 _addNewSpot();
               } else if (choice == "remove") {
                 _removeLastSpot();
-              } else if (choice == "view") {
+              } else if (choice == "viewSquare") {
                 setState(() {
-                  filter = filter == 1 ? 2 : 1;
-                  filter2 = filter2 == 4 ? 1.9 : 4;
+                  filter = 2;
+                  filter2 = 1.9;
                 });
-              } else if (choice == "filtro") {
+              } else if (choice == "viewLines") {
                 setState(() {
-                  filterStatus = (filterStatus + 1) % 3;
+                  filter = 1;
+                  filter2 = 4;
+                });
+              } 
+              else if (choice == "filterAll") {
+                setState(() {
+                  filterStatus = 0;
+                });
+              } else if (choice == "filterOccupied") {
+                setState(() {
+                  filterStatus = 1;
+                });
+              }else if (choice == "filterAvailable") {
+                setState(() {
+                  filterStatus = 2;
                 });
               }
             },
@@ -216,22 +230,34 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                       leading: Icon(Icons.remove),
                       title: Text("Remover Última Vaga"))),
               PopupMenuItem<String>(
-                value: "view",
+                value: "viewSquare",
                 child: ListTile(
-                    leading: Icon(Icons.filter_1_sharp),
-                    title: Text(filter == 1
-                        ? "Visualizar em Quadrados"
-                        : "Visualizar em Linhas")),
+                    leading: Icon(Icons.apps_rounded),
+                    title: Text("Visualizar em Quadrados")),
               ),
               PopupMenuItem<String>(
-                  value: "filtro",
+                value: "viewLines",
+                child: ListTile(
+                  leading: Icon(Icons.article_outlined),
+                  title: Text("Visualizar em Linhas"),
+                ),
+              ),
+              PopupMenuItem<String>(
+                  value: "filterAll",
                   child: ListTile(
-                    leading: Icon(Icons.filter_list),
-                    title: Text(filterStatus == 0
-                        ? "Mostrar Apenas Ocupadas"
-                        : filterStatus == 1
-                            ? "Mostrar Apenas Disponiveis"
-                            : "Mostrar Todas"),
+                    leading: Icon(Icons.car_repair),
+                    title: Text("Mostrar Todas as Vagas"),
+                  )),
+              PopupMenuItem<String>(
+                  value: "filterOccupied",
+                  child: ListTile(
+                    leading: Icon(Icons.directions_bus),
+                    title: Text("Mostrar Apenas Vagas Ocupadas"),
+                  )),PopupMenuItem<String>(
+                  value: "filterAvailable",
+                  child: ListTile(
+                    leading: Icon(Icons.directions_bus_filled_outlined),
+                    title: Text("Mostrar Apenas Vagas Disponíveis"),
                   )),
             ],
           ),
@@ -281,7 +307,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     TransactionModel newTransaction = TransactionModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       plate: plate,
-      date: DateTime.now(),
+      entrydate: DateTime.now(),
     );
 
     List<String>? savedData = prefs.getStringList('parkingTransactions') ?? [];

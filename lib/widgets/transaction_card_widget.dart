@@ -25,15 +25,15 @@ class TransactionCardWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                "Entrada: ${transactionModel.date != null ? DateFormat('dd/MM/yyyy HH:mm').format(transactionModel.date!) : 'Sem data'}"),
+                "Entrada: ${transactionModel.entrydate != null ? DateFormat('dd/MM/yyyy HH:mm').format(transactionModel.entrydate!) : 'Sem data'}"),
             Text(
                 "Saída: ${transactionModel.endDate != null ? DateFormat('dd/MM/yyyy HH:mm').format(transactionModel.endDate!) : "Ainda no estacionamento"}"),
             Text(
-                "Duração: ${transactionModel.date != null ? formatDuration(transactionModel.date!, transactionModel.endDate) : 'Indisponível'}"),
+                "Duração: ${transactionModel.entrydate != null ? formatDuration(transactionModel.entrydate!, transactionModel.endDate) : 'Indisponível'}"),
           ],
         ), 
         leading: Icon(
-          transactionModel.endDate == null ? Icons.directions_car : Icons.check_circle,
+          transactionModel.endDate == null ? Icons.directions_bus : Icons.check_circle,
           color: transactionModel.endDate == null ? Colors.red :  Color.fromRGBO(68, 194, 253,1),
         ),
       ),
