@@ -42,7 +42,8 @@ class ExitDialogWidget extends StatelessWidget {
         ],
       ),
       actions: [
-        TextButton(
+
+        Row(children: [TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text("Cancelar"),
         ),
@@ -58,7 +59,8 @@ class ExitDialogWidget extends StatelessWidget {
             onConfirm();
           },
           child: Text("Registrar Saída"),
-        ),
+        ),],),
+        
       ],
     );
   }

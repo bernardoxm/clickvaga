@@ -27,11 +27,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ClickVagas',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          titleTextStyle: TextStyle(
+        appBarTheme: AppBarTheme(centerTitle: true,
+
+          titleTextStyle: TextStyle(  
               color: Colors.white,
               fontFamily: 'Montserrat',
-              fontSize: 20),
+              fontSize: 20),  
           iconTheme: IconThemeData(color: Colors.white),
           backgroundColor: const Color.fromRGBO(68, 194, 253, 1), //cor da raro
         ),
