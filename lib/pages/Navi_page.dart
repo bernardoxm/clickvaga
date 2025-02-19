@@ -36,9 +36,9 @@ class _NaviPageState extends State<NaviPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        backgroundColor: const Color.fromARGB(255, 241, 241, 241),
+        backgroundColor: Color.fromRGBO(69, 77, 102, 1),
         selectedItemColor:  Color.fromRGBO(68, 194, 253,1), 
-        unselectedItemColor: Color.fromRGBO(69, 77, 102, 1),
+        unselectedItemColor: Color.fromRGBO(232, 232, 232, 1),
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.local_parking),
