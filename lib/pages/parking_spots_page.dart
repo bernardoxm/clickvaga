@@ -1,6 +1,5 @@
-import 'package:clickvagas/data/parking_spot_repository.dart';
+import 'package:clickvagas/repository/parking_spot_repository.dart';
 import 'package:clickvagas/models/parking_spot_model.dart';
-
 
 import 'package:clickvagas/widgets/created_parking_spots_widget.dart';
 import 'package:clickvagas/widgets/entry_dialog_widget.dart';
@@ -24,7 +23,8 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   int totalSpots = 0;
   int filter = 1;
   double filter2 = 4;
-  int filterStatus = 0; // 0 = Todos, 1 = Apenas Ocupados, 2 = Apenas Disponíveis
+  int filterStatus =
+      0; // 0 = Todos, 1 = Apenas Ocupados, 2 = Apenas Disponíveis
 
   @override
   void initState() {
@@ -46,13 +46,11 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     }
   }
 
-
   Future<void> _addNewSpot() async {
     await _repository.addNewSpot(parkingSpots);
     _loadParkingSpots();
   }
 
- 
   Future<void> _removeLastSpot() async {
     try {
       await _repository.removeLastSpot(parkingSpots);
@@ -62,41 +60,43 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     }
   }
 
- 
- Future<void> _createdParkingSpots() async {
-  TextEditingController spotsController = TextEditingController();
+  Future<void> _createdParkingSpots() async {
+    TextEditingController spotsController = TextEditingController();
 
-  await showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      return Center(
-        child: SingleChildScrollView(
-          child: AlertDialog(
-            title: Text("Vamos começar!!!", textAlign: TextAlign.center),
-            content: CreatedParkingSpotsWidget(spotsController: spotsController),
-            actions: [
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    int? spots = int.tryParse(spotsController.text);
-                    if (spots != null && spots > 0) {
-                      await _repository.initializeParkingSpots(spots); 
-                      await _loadParkingSpots(); 
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Text("Salvar", style: TextStyle(color: Colors.white),),
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Center(
+          child: SingleChildScrollView(
+            child: AlertDialog(
+              title: Text("Vamos começar!!!", textAlign: TextAlign.center),
+              content:
+                  CreatedParkingSpotsWidget(spotsController: spotsController),
+              actions: [
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      int? spots = int.tryParse(spotsController.text);
+                      if (spots != null && spots > 0) {
+                        await _repository.initializeParkingSpots(spots);
+                        await _loadParkingSpots();
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text(
+                      "Salvar",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 
   void _showErrorDialog(String message) {
     showDialog(
@@ -116,7 +116,6 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
-
   void _showEntryDialog(int index) {
     showDialog(
       context: context,
@@ -135,7 +134,6 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
-
   void _showExitDialog(int index) {
     showDialog(
       context: context,
@@ -152,11 +150,12 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     );
   }
 
-
   List<ParkingSpotModel> getFilteredSpots() {
     if (isSearching) return filteredSpots;
-    if (filterStatus == 1) return parkingSpots.where((spot) => spot.isOccupied).toList();
-    if (filterStatus == 2) return parkingSpots.where((spot) => !spot.isOccupied).toList();
+    if (filterStatus == 1)
+      return parkingSpots.where((spot) => spot.isOccupied).toList();
+    if (filterStatus == 2)
+      return parkingSpots.where((spot) => !spot.isOccupied).toList();
     return parkingSpots;
   }
 
@@ -175,6 +174,16 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                 _addNewSpot();
               } else if (choice == "remove") {
                 _removeLastSpot();
+              } else if (choice == "viewSquare") {
+                setState(() {
+                  filter = 2; // Define duas colunas (quadrados)
+                  filter2 = 1.9; // Mantém o formato quadrado
+                });
+              } else if (choice == "viewLines") {
+                setState(() {
+                  filter = 1; // Define uma única coluna (linhas)
+                  filter2 = 4; // Formato mais largo
+                });
               } else if (choice == "filterAll") {
                 setState(() => filterStatus = 0);
               } else if (choice == "filterOccupied") {
@@ -184,13 +193,57 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
               }
             },
             itemBuilder: (context) => [
-              PopupMenuItem(value: "add", child: ListTile(leading: Icon(Icons.add), title: Text("Adicionar Vaga"))),
-              PopupMenuItem(value: "remove", child: ListTile(leading: Icon(Icons.remove), title: Text("Remover Última Vaga"))),
-              PopupMenuItem(value: "filterAll", child: ListTile(leading: Icon(Icons.car_repair), title: Text("Mostrar Todas"))),
-              PopupMenuItem(value: "filterOccupied", child: ListTile(leading: Icon(Icons.directions_bus), title: Text("Mostrar Ocupadas"))),
-              PopupMenuItem(value: "filterAvailable", child: ListTile(leading: Icon(Icons.directions_bus_filled_outlined), title: Text("Mostrar Disponíveis"))),
+              PopupMenuItem(
+                value: "add",
+                child: ListTile(
+                  leading: Icon(Icons.add),
+                  title: Text("Adicionar Vaga"),
+                ),
+              ),
+              PopupMenuItem(
+                value: "remove",
+                child: ListTile(
+                  leading: Icon(Icons.remove),
+                  title: Text("Remover Última Vaga"),
+                ),
+              ),
+              PopupMenuItem(
+                value: "viewSquare",
+                child: ListTile(
+                  leading: Icon(Icons.apps_rounded),
+                  title: Text("Visualizar em Quadrados"),
+                ),
+              ),
+              PopupMenuItem(
+                value: "viewLines",
+                child: ListTile(
+                  leading: Icon(Icons.article_outlined),
+                  title: Text("Visualizar em Linhas"),
+                ),
+              ),
+              PopupMenuItem(
+                value: "filterAll",
+                child: ListTile(
+                  leading: Icon(Icons.car_repair),
+                  title: Text("Mostrar Todas"),
+                ),
+              ),
+              PopupMenuItem(
+                value: "filterOccupied",
+                child: ListTile(
+                  leading: Icon(Icons.directions_bus),
+                  title: Text("Mostrar Ocupadas"),
+                ),
+              ),
+              PopupMenuItem(
+                value: "filterAvailable",
+                child: ListTile(
+                  leading: Icon(Icons.directions_bus_filled_outlined),
+                  title: Text("Mostrar Disponíveis"),
+                ),
+              ),
             ],
-          ),
+          )
         ],
       ),
       body: Column(
@@ -201,9 +254,11 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
             onSearch: (String plate) {
               setState(() {
                 isSearching = plate.isNotEmpty;
-                filteredSpots = parkingSpots.where((spot) =>
-                    spot.plate.isNotEmpty &&
-                    spot.plate.toLowerCase().contains(plate.toLowerCase())).toList();
+                filteredSpots = parkingSpots
+                    .where((spot) =>
+                        spot.plate.isNotEmpty &&
+                        spot.plate.toLowerCase().contains(plate.toLowerCase()))
+                    .toList();
               });
             },
           ),
@@ -221,16 +276,21 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                       ),
                       itemCount: getFilteredSpots().length,
                       itemBuilder: (context, index) {
+                        int originalIndex = parkingSpots.indexWhere((spot) =>
+                            spot.name == getFilteredSpots()[index].name);
+
                         return ParkingSpotCardWidget(
-                          index: index,
+                          index: originalIndex,
                           isOccupied: getFilteredSpots()[index].isOccupied,
                           plate: getFilteredSpots()[index].plate,
                           entryTime: getFilteredSpots()[index].entrydate,
                           onTap: () {
-                            if (getFilteredSpots()[index].isOccupied) {
-                              _showExitDialog(index);
-                            } else {
-                              _showEntryDialog(index);
+                            if (originalIndex != -1) {
+                              if (getFilteredSpots()[index].isOccupied) {
+                                _showExitDialog(originalIndex);
+                              } else {
+                                _showEntryDialog(originalIndex);
+                              }
                             }
                           },
                         );
