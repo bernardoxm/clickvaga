@@ -1,8 +1,11 @@
+import 'package:clickvaga/bloc/bloc_transaction/transaction_bloc.dart';
+import 'package:clickvaga/bloc/bloc_transaction/transaction_state.dart';
 import 'package:clickvaga/models/transaction_model.dart';
 import 'package:clickvaga/widgets/entry_dialog_widget.dart';
 import 'package:clickvaga/widgets/exit_dialog_widget.dart';
 import 'package:clickvaga/widgets/parking_spot_card_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -215,10 +218,15 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Pátio"),
+        backgroundColor: Colors.blue,
+        title: Text(
+          "Pátio",
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         actions: [
           PopupMenuButton<String>(
-            icon: Icon(Icons.menu),
+            icon: Icon(Icons.menu, color: Colors.white),
             onSelected: (String choice) {
               if (choice == "add") {
                 _addNewSpot();
@@ -234,8 +242,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                   filter = 1;
                   filter2 = 4;
                 });
-              } 
-              else if (choice == "filterAll") {
+              } else if (choice == "filterAll") {
                 setState(() {
                   filterStatus = 0;
                 });
@@ -243,7 +250,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                 setState(() {
                   filterStatus = 1;
                 });
-              }else if (choice == "filterAvailable") {
+              } else if (choice == "filterAvailable") {
                 setState(() {
                   filterStatus = 2;
                 });
@@ -283,7 +290,8 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                   child: ListTile(
                     leading: Icon(Icons.directions_bus),
                     title: Text("Mostrar Apenas Vagas Ocupadas"),
-                  )),PopupMenuItem<String>(
+                  )),
+              PopupMenuItem<String>(
                   value: "filterAvailable",
                   child: ListTile(
                     leading: Icon(Icons.directions_bus_filled_outlined),
@@ -293,40 +301,74 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.all(10),
-        child: filteredSpots.isEmpty
-            ? Center(
-                child: Text("Não a vagas disponíveis ou ocupadas"),
-              )
-            : GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: filter,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: filter2,
+      body: Column(
+        children: [
+          BlocBuilder<ParkingBloc, ParkingState>(
+            builder: (context, state) {
+              return Container(
+                color: Colors.blue,
+                padding: EdgeInsets.all(16.0),
+                child: Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Disponíveis: ${state.availableSpots}",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    Text(
+                      "Ocupados: ${state.occupiedSpots.length}",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ],
                 ),
-                itemCount: filteredSpots.length,
-                itemBuilder: (context, index) {
-                  int originalIndex =
-                      parkingSpots.indexOf(filteredSpots[index]);
-                  return ParkingSpotCardWidget(
-                    index: originalIndex,
-                    isOccupied: filteredSpots[index].isOccupied,
-                    plate: filteredSpots[index].plate,
-                    entryTime: filteredSpots[index].entryTime,
-                    onTap: () {
-                      if (filteredSpots[index].isOccupied) {
-                        _showExitDialog(
-                            parkingSpots.indexOf(filteredSpots[index]));
-                      } else {
-                        _showEntryDialog(
-                            parkingSpots.indexOf(filteredSpots[index]));
-                      }
-                    },
-                  );
-                },
-              ),
+              );
+            },
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: filteredSpots.isEmpty
+                  ? Center(
+                      child: Text("Não a vagas disponíveis ou ocupadas"),
+                    )
+                  : GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: filter,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: filter2,
+                      ),
+                      itemCount: filteredSpots.length,
+                      itemBuilder: (context, index) {
+                        int originalIndex =
+                            parkingSpots.indexOf(filteredSpots[index]);
+                        return ParkingSpotCardWidget(
+                          index: originalIndex,
+                          isOccupied: filteredSpots[index].isOccupied,
+                          plate: filteredSpots[index].plate,
+                          entryTime: filteredSpots[index].entryTime,
+                          onTap: () {
+                            if (filteredSpots[index].isOccupied) {
+                              _showExitDialog(
+                                  parkingSpots.indexOf(filteredSpots[index]));
+                            } else {
+                              _showEntryDialog(
+                                  parkingSpots.indexOf(filteredSpots[index]));
+                            }
+                          },
+                        );
+                      },
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }

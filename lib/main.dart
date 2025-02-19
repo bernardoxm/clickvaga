@@ -1,10 +1,28 @@
+import 'package:clickvaga/bloc/bloc_plate/plate_bloc.dart';
+import 'package:clickvaga/bloc/bloc_transaction/transaction_bloc.dart';
 import 'package:clickvaga/pages/Navi_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      
+      
+      providers: [
+        BlocProvider<PlateBloc>(
+          create: (context) => PlateBloc(),
+        ),
+ BlocProvider<ParkingBloc>(
+          create: (context) => ParkingBloc(),
+        ),
+
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
