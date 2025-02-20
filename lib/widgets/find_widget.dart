@@ -67,7 +67,7 @@ class _FindWidgetState extends State<FindWidget> {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ), inputFormatters: [
-                  PlacaVeiculoInputFormatter(),
+                 
                 ],
               onChanged:  widget.onSearch,
             ),

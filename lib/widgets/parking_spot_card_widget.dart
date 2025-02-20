@@ -25,7 +25,7 @@ class ParkingSpotCardWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: isOccupied ? Colors.red : Color.fromRGBO(68, 194, 253, 1),
+          color: isOccupied ? Colors.red : Color.fromRGBO(218, 232, 238, 1),
           borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.center,

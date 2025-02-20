@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class ExitDialogWidget extends StatelessWidget {
-
-  
-
   final String plate;
   final DateTime entryTime;
   final VoidCallback onConfirm;
@@ -32,28 +28,43 @@ class ExitDialogWidget extends StatelessWidget {
         ],
       ),
       actions: [
-
-        Row( spacing: 20, 
+        Row(
+          spacing: 20,
           mainAxisAlignment: MainAxisAlignment.center,
-          
-          children: [TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text("Cancelar", style: TextStyle(color: Colors.red)),
+          children: [
+            Expanded(
+              flex: 2,
+              child: TextButton(
+                
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    Color.fromRGBO(207, 54, 87, 1), //cor da raro
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: Text("Cancelar",
+                    style: TextStyle(
+                        color: const Color.fromARGB(255, 255, 255, 255))),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content: Text("Veículo $plate saiu do estacionamento")),
+                );
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+                onConfirm();
+              },
+              child: Text(
+                "Saída",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
-        ElevatedButton(
-          onPressed: () {
-          
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Veículo $plate saiu do estacionamento")),
-            );
-            if (context.mounted) {
-              Navigator.pop(context);
-            }
-            onConfirm();
-          },
-          child: Text("Saída",style: TextStyle(color: Colors.white),),
-        ),],),
-        
       ],
     );
   }

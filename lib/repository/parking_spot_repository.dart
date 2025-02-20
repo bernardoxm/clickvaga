@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:clickvagas/models/parking_spot_model.dart';
-import 'package:clickvagas/models/transaction_model.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class ParkingSpotRepository {
 
@@ -15,7 +16,7 @@ Future<void> initializeParkingSpots(int totalSpots) async {
       name: 'Vaga ${index + 1}',
       plate: '',
       isOccupied: false,
-      entrydate: null,
+      entrydate: null, id: Uuid(),
     ),
   );
 
@@ -45,6 +46,7 @@ Future<void> initializeParkingSpots(int totalSpots) async {
           plate: '',
           isOccupied: false,
           entrydate: null,
+          id: Uuid(),
         ),
       );
     }
@@ -77,11 +79,13 @@ Future<void> initializeParkingSpots(int totalSpots) async {
 
     await saveSpots(parkingSpots);
 
-    TransactionModel newTransaction = TransactionModel(
+    ParkingSpotModel newTransaction = ParkingSpotModel(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       plate: plate,
       entrydate: DateTime.now(),
-    );
+      isOccupied: true,
+      name: parkingSpots[index].name,
+            );
 
     List<String> savedData = prefs.getStringList('parkingTransactions') ?? [];
     savedData.add(json.encode(newTransaction.toJson()));
@@ -103,14 +107,14 @@ Future<void> initializeParkingSpots(int totalSpots) async {
     List<String>? savedData = prefs.getStringList('parkingTransactions');
     if (savedData == null) return;
 
-    List<TransactionModel> transactions = savedData
+    List<ParkingSpotModel> transactions = savedData
         .map((transaction) =>
-            TransactionModel.fromJson(json.decode(transaction)))
+           ParkingSpotModel.fromJson(json.decode(transaction)))
         .toList();
 
     for (var i = 0; i < transactions.length; i++) {
       if (transactions[i].plate == plate && transactions[i].isActive()) {
-        transactions[i] = transactions[i].copyWith(endDate: DateTime.now());
+        transactions[i] = transactions[i].copyWith(exitdate: DateTime.now());
         break;
       }
     }
@@ -131,6 +135,7 @@ Future<void> initializeParkingSpots(int totalSpots) async {
       plate: '',
       isOccupied: false,
       entrydate: null,
+      id: Uuid(),
     ));
 
     await prefs.setInt('totalSpots', totalSpots);

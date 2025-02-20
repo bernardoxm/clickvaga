@@ -13,7 +13,8 @@ class TransactionFiltredButtonWidget extends StatelessWidget {
   });
 
 
-
+// cuidado para nao gravar registro vazinho no banco . lembre-se que na tela inicial as vagas livres é 
+//apenas visual
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
@@ -25,6 +26,7 @@ class TransactionFiltredButtonWidget extends StatelessWidget {
           onFilterChange(choice);
         }
       },
+      // adequar os filtros  @todo talvez caberia um enum para esses valores
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         _menuItem("filterAll", Icons.dynamic_feed_rounded, "Mostrar Todos"),
         _menuItem("filterFinished", Icons.directions_bus_filled_rounded, "Mostrar Apenas Finalizados"),

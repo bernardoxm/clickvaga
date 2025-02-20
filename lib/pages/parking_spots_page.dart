@@ -68,6 +68,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
       barrierDismissible: false,
       builder: (context) {
         return Center(
+          //@todo revisar texto
           child: SingleChildScrollView(
             child: AlertDialog(
               title: Text("Vamos começar!!!", textAlign: TextAlign.center),
@@ -99,6 +100,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   }
 
   void _showErrorDialog(String message) {
+    //@todo revisar o texto da mensagem
     showDialog(
       context: context,
       builder: (context) {
@@ -254,11 +256,18 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
             onSearch: (String plate) {
               setState(() {
                 isSearching = plate.isNotEmpty;
-                filteredSpots = parkingSpots
-                    .where((spot) =>
-                        spot.plate.isNotEmpty &&
-                        spot.plate.toLowerCase().contains(plate.toLowerCase()))
-                    .toList();
+                String cleanedPlate = plate.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+
+                filteredSpots = parkingSpots.where((spot) {
+                  // Remover caracteres especiais da placa do spot antes da comparação
+                  String cleanedSpotPlate =
+                      spot.plate.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
+
+                  return spot.plate.isNotEmpty &&
+                      cleanedSpotPlate
+                          .toLowerCase()
+                          .contains(cleanedPlate.toLowerCase());
+                }).toList();
               });
             },
           ),

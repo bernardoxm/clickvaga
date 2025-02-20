@@ -1,4 +1,4 @@
-import 'package:clickvagas/models/transaction_model.dart';
+import 'package:clickvagas/models/parking_spot_model.dart';
 import 'package:clickvagas/widgets/transaction_card_widget.dart';
 import 'package:clickvagas/widgets/transaction_filtred_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,8 @@ class ReportTransactions extends StatefulWidget {
 }
 
 class _ReportTransactionsState extends State<ReportTransactions> {
-  List<TransactionModel> transactions = [];
+  List<ParkingSpotModel> transactions = [];
+  // @todo criar um enum para esses valores
   int filterStatus = 0; // 0 = Todos, 1 = Apenas Ativos, 2 = Apenas Finalizados
   DateTime? selectedStartDate;
   DateTime? selectedEndDate;
@@ -33,7 +34,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
     if (savedData != null) {
       setState(() {
         transactions = savedData
-            .map((t) => TransactionModel.fromJson(json.decode(t)))
+            .map((t) => ParkingSpotModel.fromJson(json.decode(t)))
             .toList();
       });
     }
@@ -41,6 +42,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
 
 
   String _formatDuration(DateTime entry, DateTime? exit) {
+    //@todoo revisar texto - hardcode
     if (exit == null) return "Ainda no estacionamento";
     Duration duration = exit.difference(entry);
     int hours = duration.inHours;
@@ -49,19 +51,18 @@ class _ReportTransactionsState extends State<ReportTransactions> {
   }
 
 
-  List<TransactionModel> _getFilteredTransactions() {
-    List<TransactionModel> filteredList = transactions;
-
+  List<ParkingSpotModel> _getFilteredTransactions() {
+    List<ParkingSpotModel> filteredList = transactions;
+//@todo valores soltos devem ser substituidos por constantes
     if (filterStatus == 1) {
-      filteredList = filteredList.where((t) => t.endDate == null).toList();
+      filteredList = filteredList.where((t) => t.exitdate == null).toList();
     } else if (filterStatus == 2) {
-      filteredList = filteredList.where((t) => t.endDate != null).toList();
+      filteredList = filteredList.where((t) => t.exitdate != null).toList();
     }
 
     if (selectedStartDate != null && selectedEndDate != null) {
       filteredList = filteredList.where((t) {
-        return t.entrydate
-                .isAfter(selectedStartDate!.subtract(Duration(days: 1))) &&
+        return t.entrydate!.isAfter(selectedStartDate!.subtract(Duration(days: 1))) &&
             t.entrydate!.isBefore(selectedEndDate!.add(Duration(days: 1)));
       }).toList();
     }
@@ -69,7 +70,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
     return filteredList;
   }
 
-// filtrar
+// filtrar @todo talvez apor questao de tempo nao priorizar filtro por data
   Future<void> _dateFilter() async {
     DateTime now = DateTime.now();
     DateTime firstDate = DateTime(now.year, 1, 1);
@@ -86,16 +87,17 @@ class _ReportTransactionsState extends State<ReportTransactions> {
         selectedEndDate = picked.end;
       });
 
-   
+   // @todo mais um exemplo de funcao que poderia ser extraida para uma classe utilitaria
       String formattedStart = DateFormat("dd/MM/yyyy").format(picked.start);
       String formattedEnd = DateFormat("dd/MM/yyyy").format(picked.end);
-
+//@todo lembre-se de remover os prints antes de submeter o codigo
       debugPrint("Data selecionada: $formattedStart até $formattedEnd");
     }
   }
 
   void _filterChange(String choice) {
     setState(() {
+      //@todo talvez caberia um enum para esses valores
       if (choice == "filterAll") {
         filterStatus = 0;
         selectedStartDate = null;
@@ -110,7 +112,7 @@ class _ReportTransactionsState extends State<ReportTransactions> {
 
   @override
   Widget build(BuildContext context) {
-    List<TransactionModel> filteredTransactions = _getFilteredTransactions();
+    List<ParkingSpotModel> filteredTransactions = _getFilteredTransactions();
 
     return Scaffold(
       appBar: AppBar(
@@ -126,11 +128,12 @@ class _ReportTransactionsState extends State<ReportTransactions> {
       body: Padding(
         padding: EdgeInsets.all(10),
         child: filteredTransactions.isEmpty
+        //@todo transacao eh um termo muito generico, talvez fosse melhor usar "registro" ou "movimentacao"
             ? Center(child: Text("Nenhuma transação registrada"))
             : ListView.builder(
                 itemCount: filteredTransactions.length,
                 itemBuilder: (context, index) {
-                  TransactionModel transaction = filteredTransactions[index];
+                  ParkingSpotModel transaction = filteredTransactions[index];
 
                   return TransactionCardWidget(
                       transactionModel: transaction,

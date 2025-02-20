@@ -36,9 +36,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                       : null,
                   border: OutlineInputBorder(),
                 ),
-                inputFormatters: [
-                  PlacaVeiculoInputFormatter(),
-                ],
+                inputFormatters: [],
                 onChanged: (value) {
                   context.read<PlateBloc>().add(UpdatePlate(value));
                   plate = value;
@@ -57,30 +55,38 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
           ),
         ),
         actions: [
-          Row( spacing:20, 
+          Row(
+            spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(
+              ElevatedButton( style: ButtonStyle(backgroundColor:WidgetStateProperty.all(
+             Color.fromRGBO(207, 54, 87, 1), //cor da raro
+            ), ),
                   onPressed: () {
                     plate = "";
                     context.read<PlateBloc>().add(UpdatePlate(""));
                     Navigator.pop(context);
                   },
-                  child: Text("Cancelar", style: TextStyle(color: Colors.red),)),
+                  child: Text(
+                    "Cancelar",
+                    style: TextStyle(
+                        color: const Color.fromARGB(255, 255, 255, 255)),
+                  )),
               ElevatedButton(
                 onPressed: () {
-                  // verificar se a placa ja esta na model e se é valida
-                  
-
                   var plate = context.read<PlateBloc>().state.plate;
-                  if (plate.isNotEmpty && context.read<PlateBloc>().state.isValid) {
+                  if (plate.isNotEmpty &&
+                      context.read<PlateBloc>().state.isValid) {
                     widget.onConfirm(plate);
                     Navigator.pop(context);
                     plate = "";
                     context.read<PlateBloc>().add(UpdatePlate(""));
                   }
                 },
-                child: Text("Entrada", style: TextStyle(color: Colors.white),),
+                child: Text(
+                  "Entrada",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           )
