@@ -34,16 +34,16 @@ class LicensePlateWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: dataColor.colorBlue900,
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(6),
-                topRight: Radius.circular(6),
+                topLeft: Radius.circular(5),
+                topRight: Radius.circular(5),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Row( spacing: 5,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
+                  child: Text( 
                    dataText.textBrazil,
                     style: TextStyle(
                       color: dataColor.colorWhite,
