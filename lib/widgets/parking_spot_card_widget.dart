@@ -67,7 +67,7 @@ class ParkingSpotCardWidget extends StatelessWidget {
 
      
               Expanded(
-                child: Row(
+                child: Row( 
                   spacing: 10,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -96,7 +96,7 @@ class ParkingSpotCardWidget extends StatelessWidget {
                     ),
                     if (isOccupied == false)
                       LicensePlateWidget(
-                        plate: dataText.textSpotAvailable,
+                        plate: dataText.textAval,
                       ),
                     if (isOccupied) ...[
                       LicensePlateWidget(

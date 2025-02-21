@@ -254,7 +254,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: filteredCards.isEmpty
                           ?  Center(
                               child:
