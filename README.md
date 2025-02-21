@@ -73,7 +73,7 @@ test/                         # Testes unitários para os repositórios e blocos
 1. Certifique-se de ter o [Flutter](https://flutter.dev/docs/get-started/install) instalado.
 2. Clone o repositório:
    ```sh
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   [git clone https://github.com/seu-usuario/seu-repositorio.git](https://github.com/bernardoxm/clickvaga)
    ```
 3. Acesse o diretório do projeto:
    ```sh
