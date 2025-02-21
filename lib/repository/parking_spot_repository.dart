@@ -1,160 +1,90 @@
-import 'dart:convert';
-
-import 'package:clickvagas/models/parking_spot_model.dart';
-import 'package:clickvagas/models/transaction_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:clickvagas/data/data_functions.dart';
+import 'package:clickvagas/models/spot_parking_model.dart';
+import 'package:clickvagas/models/spot_card_info.dart';
+import 'package:clickvagas/models/spot_model.dart';
+import 'package:uuid/uuid.dart';
 
 class ParkingSpotRepository {
+  final DataFunctions dataFunctions = DataFunctions();
 
-Future<void> initializeParkingSpots(int totalSpots) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  List<ParkingSpotModel> parkingSpots = List.generate(
-    totalSpots,
-    (index) => ParkingSpotModel(
-      name: 'Vaga ${index + 1}',
-      plate: '',
-      isOccupied: false,
-      entrydate: null,
-    ),
-  );
-
-  await prefs.setInt('totalSpots', totalSpots);
-  await saveSpots(parkingSpots);
-}
-
-
-  Future<List<ParkingSpotModel>> loadSpots() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? totalSpots = prefs.getInt('totalSpots');
-    List<String>? savedData = prefs.getStringList('parkingSpots');
-
-    if (totalSpots == null || totalSpots <= 0) {
-      return [];
+  Future<List<SpotModel>> createSpots(int totalSpots) async {
+    List<SpotModel> spots = [];
+    for (int i = 0; i < totalSpots; i++) {
+      spots.add(SpotModel(
+        id: Uuid().v4(),
+        name: 'Spot $i',
+        isOccupied: false,
+      ));
     }
 
-    if (savedData != null) {
-      return savedData
-          .map((spot) => ParkingSpotModel.fromJson(json.decode(spot)))
-          .toList();
-    } else {
-      return List.generate(
-        totalSpots,
-        (index) => ParkingSpotModel(
-          name: 'Vaga ${index + 1}',
-          plate: '',
-          isOccupied: false,
-          entrydate: null,
-        ),
-      );
-    }
+    await dataFunctions.insertSpots(spots);
+    return spots;
   }
 
-
-  Future<void> saveSpots(List<ParkingSpotModel> parkingSpots) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> spotsData =
-        parkingSpots.map((spot) => json.encode(spot.toJson())).toList();
-    await prefs.setStringList('parkingSpots', spotsData);
+  Future<List<SpotModel>> loadSpots() async {
+    return await dataFunctions.getSpots();
   }
 
-  Future<bool> plateExists(String plate) async {
-    List<ParkingSpotModel> spots = await loadSpots();
-    return spots.any((spot) => spot.plate == plate && spot.isOccupied);
+  Future<void> creatANewSpot(SpotModel spot) async {
+    await dataFunctions.insertANewSpot(spot);
   }
 
-  Future<void> registryEntry(
-      List<ParkingSpotModel> parkingSpots, int index, String plate) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> deleteSpot(String id) async {
+    await dataFunctions.deleteSpot(id);
+  }
 
-    if (await plateExists(plate)) {
-      throw Exception('Placa já está no estacionamento.');
+  Future<void> registryEntryForSpot(SpotModel spot, String plate) async {
+    bool exists = await dataFunctions.isPlateAlreadyActive(plate);
+    if (exists) {
+      throw Exception("Esta placa já está em uso.");
     }
 
-    parkingSpots[index].isOccupied = true;
-    parkingSpots[index].plate = plate;
-    parkingSpots[index].entrydate = DateTime.now();
+    if (spot.isOccupied) {
+      throw Exception("Este spot já está ocupado");
+    }
 
-    await saveSpots(parkingSpots);
-
-    TransactionModel newTransaction = TransactionModel(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
+    final parkingEntry = ParkingSpotModel(
+      id: Uuid().v4(),
+      spotId: spot.id,
       plate: plate,
       entrydate: DateTime.now(),
+      exitdate: null,
     );
 
-    List<String> savedData = prefs.getStringList('parkingTransactions') ?? [];
-    savedData.add(json.encode(newTransaction.toJson()));
-
-    await prefs.setStringList('parkingTransactions', savedData);
+    await dataFunctions.insertPlateWithSpot(parkingEntry);
   }
 
-  Future<void> registryExit(
-      List<ParkingSpotModel> parkingSpots, int index) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String plate = parkingSpots[index].plate;
+  Future<void> registryExitForSpot(SpotModel spot) async {
+    final entries = await getParkingSpots();
+    final entry = entries.firstWhere(
+      (e) => e.spotId == spot.id,
+      orElse: () => throw Exception(
+          "Nenhum registro de entrada encontrado para esse spot"),
+    );
 
-    parkingSpots[index].isOccupied = false;
-    parkingSpots[index].plate = '';
-    parkingSpots[index].entrydate = null;
+    final updatedEntry = entry.copyWith(
+      exitdate: DateTime.now(),
+      spotId: "",
+    );
+    await dataFunctions.updateParkingExit(updatedEntry);
 
-    await saveSpots(parkingSpots);
-
-    List<String>? savedData = prefs.getStringList('parkingTransactions');
-    if (savedData == null) return;
-
-    List<TransactionModel> transactions = savedData
-        .map((transaction) =>
-            TransactionModel.fromJson(json.decode(transaction)))
-        .toList();
-
-    for (var i = 0; i < transactions.length; i++) {
-      if (transactions[i].plate == plate && transactions[i].isActive()) {
-        transactions[i] = transactions[i].copyWith(endDate: DateTime.now());
-        break;
-      }
-    }
-
-    List<String> updatedData = transactions
-        .map((transaction) => json.encode(transaction.toJson()))
-        .toList();
-    await prefs.setStringList('parkingTransactions', updatedData);
+    await dataFunctions.freeSpot(spot.id);
   }
 
-  Future<void> addNewSpot(List<ParkingSpotModel> parkingSpots) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    int totalSpots = (prefs.getInt('totalSpots') ?? 0) + 1;
-
-    parkingSpots.add(ParkingSpotModel(
-      name: 'Vaga $totalSpots',
-      plate: '',
-      isOccupied: false,
-      entrydate: null,
-    ));
-
-    await prefs.setInt('totalSpots', totalSpots);
-    await saveSpots(parkingSpots);
+  Future<List<SpotCardInfo>> loadSpotCardInfos() async {
+    return await DataFunctions().loadSpotCardInfos();
   }
 
-  Future<void> removeLastSpot(List<ParkingSpotModel> parkingSpots) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    int indexToRemove = parkingSpots.lastIndexWhere((spot) => !spot.isOccupied);
-
-    if (indexToRemove == -1) {
-      throw Exception("Não é possível remover uma vaga ocupada.");
-    }
-
-    parkingSpots.removeAt(indexToRemove);
-    int totalSpots = (prefs.getInt('totalSpots') ?? 1) - 1;
-
-    if (totalSpots <= 0) {
-      await prefs.remove('totalSpots');
-      await prefs.remove('parkingSpots');
-    } else {
-      await prefs.setInt('totalSpots', totalSpots);
-      await saveSpots(parkingSpots);
-    }
+  Future<void> insertPlateWithSpot(ParkingSpotModel parkingSpot) async {
+    print("insertPlateWithSpot iniciado com: ${parkingSpot.toJson()}");
+    await DataFunctions().insertParkingEntry(parkingSpot);
   }
+
+
+  Future<List<ParkingSpotModel>> getParkingSpots() async {
+    return await dataFunctions.getParkingSpots();
+  }
+
+
+  
 }
