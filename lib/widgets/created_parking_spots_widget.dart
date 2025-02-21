@@ -1,27 +1,24 @@
+import 'package:clickvagas/repository/data_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CreatedParkingSpotsWidget extends StatefulWidget {
-  const CreatedParkingSpotsWidget({
-    super.key,
-    required this.spotsController,
-  });
-
   final TextEditingController spotsController;
+  const CreatedParkingSpotsWidget({Key? key, required this.spotsController}) : super(key: key);
 
   @override
   State<CreatedParkingSpotsWidget> createState() => _CreatedParkingSpotsWidgetState();
 }
 
 class _CreatedParkingSpotsWidgetState extends State<CreatedParkingSpotsWidget> {
+DataText dataText = DataText();
+
+
   @override
   void initState() {
     super.initState();
-   
     widget.spotsController.addListener(() {
-      if (mounted) {
-        setState(() {}); 
-      }
+      if (mounted) setState(() {});
     });
   }
 
@@ -40,23 +37,20 @@ class _CreatedParkingSpotsWidgetState extends State<CreatedParkingSpotsWidget> {
           SizedBox(
             height: 100,
             width: 100,
-            child: Image(
-              image: AssetImage('assets/iconApp.png'),
-            ),
+            child: Image.asset('assets/iconApp.png'),
           ),
           Text(
-            'Bem Vindo ao ClickVagas!',
+            dataText.textAppWelcomeTitle,
             textAlign: TextAlign.center,
           ),
           Text(
-            'Para começar, informe o número de vagas disponíveis no seu estacionamento: '
-            '${widget.spotsController.text.isEmpty ? 0 : widget.spotsController.text} Vagas',
+            '${dataText.textToStart} ${widget.spotsController.text.isEmpty ? 0 : widget.spotsController.text} ${dataText.textSpots}',
             textAlign: TextAlign.center,
           ),
           TextFormField(
             controller: widget.spotsController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: "Número de vagas"),
+            decoration: InputDecoration(labelText: dataText.textNumofSpots),
             textAlign: TextAlign.center,
             inputFormatters: [
               FilteringTextInputFormatter.digitsOnly,
