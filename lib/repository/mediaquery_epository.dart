@@ -7,8 +7,8 @@ class MediaqueryDataSearch {
 
   MediaqueryDataSearch(BuildContext context)
       : searchscreenHeight = MediaQuery.of(context).size.height,
-        searchminHeight = MediaQuery.of(context).size.height * 0.19,
-        searchexpandedHeight = MediaQuery.of(context).size.height * 0.25;
+        searchminHeight = MediaQuery.of(context).size.height * 0.20,
+        searchexpandedHeight = MediaQuery.of(context).size.height * 0.28;
 
 
 
