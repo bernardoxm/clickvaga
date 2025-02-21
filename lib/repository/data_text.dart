@@ -44,6 +44,10 @@ String textManagement = 'Gestão';
 String textLetsGetStarted = 'Vamos começar';
 String textOk = 'Ok';
 String textFilterByDate = 'Filtrar por data';
+String textBtnEntry = 'Entrada';
+String textBtnExit = 'Saída';
+String textDelSpotIsOccupied = '"Não é possível remover uma vaga ocupada!"';
+String textSpotNotAvaliable  = 'Não há vagas disponíveis ou ocupadas';
 
 
 

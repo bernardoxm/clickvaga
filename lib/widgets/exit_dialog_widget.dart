@@ -119,7 +119,7 @@ class ExitDialogWidget extends StatelessWidget {
                   onConfirm();
                 },
                 child: Text(
-                  dataText.textExit,
+                  dataText.textBtnExit,
                   style: TextStyle(color: dataColors.colorWhite),
                 ),
               ),

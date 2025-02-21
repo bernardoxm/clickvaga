@@ -41,7 +41,6 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
   }
 
   Future<void> _createdParkingSpots(BuildContext context) async {
-    
     TextEditingController spotsController = TextEditingController();
     await showDialog(
       context: context,
@@ -50,8 +49,8 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
         return Center(
           child: SingleChildScrollView(
             child: AlertDialog(
-              title:
-                   Text(dataText.textLetsGetStarted, textAlign: TextAlign.center),
+              title: Text(dataText.textLetsGetStarted,
+                  textAlign: TextAlign.center),
               content:
                   CreatedParkingSpotsWidget(spotsController: spotsController),
               actions: [
@@ -67,7 +66,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                         });
                       }
                     },
-                    child:  Text(
+                    child: Text(
                       dataText.textSave,
                       style: TextStyle(color: dataColors.colorWhite),
                     ),
@@ -135,7 +134,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child:  Text(dataText.textOk),
+              child: Text(dataText.textOk),
             ),
           ],
         );
@@ -148,13 +147,53 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
     return BlocProvider<SpotBloc>(
       create: (context) => spotBloc,
       child: Scaffold(
-        appBar: AppBar(title:  Text(dataText.textPatio)),
+        appBar: AppBar(
+          title: Text(dataText.textPatio),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                spotBloc.add(LoadSpotsEvent());
+              },
+            ),
+            IconButton(
+              onPressed: () {
+                final currentState = spotBloc.state;
+                if (currentState is SpotLoaded) {
+                  spotBloc.add(AddSpotEvent(
+                    SpotModel(
+                      id: Uuid().v4(),
+                      name: '${currentState.spots.length + 1}',
+                      isOccupied: false,
+                    ),
+                  ));
+                }
+              },
+              icon: Icon(Icons.add),
+            ),
+            IconButton(
+            onPressed: () {
+              final currentState = spotBloc.state;
+              if (currentState is SpotLoaded) {
+                final lastSpot = currentState.spots.isNotEmpty ? currentState.spots.last : null;
+                if (lastSpot != null && !lastSpot.isOccupied) {
+                  spotBloc.add(RemoveLastSpotEvent());
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(dataText.textDelSpotIsOccupied))
+                  );
+                }
+              }
+            },
+            icon: Icon(Icons.delete),
+          )
+          ],
+        ),
         body: BlocBuilder<SpotBloc, SpotState>(
           builder: (context, state) {
             if (state is SpotLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is SpotError) {
-            
             } else if (state is SpotLoaded) {
               List<SpotCardInfo> filteredCards =
                   state.spotCardInfos.where((card) {
@@ -215,9 +254,9 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: filteredCards.isEmpty
-                          ? const Center(
+                          ?  Center(
                               child:
-                                  Text("Não há vagas disponíveis ou ocupadas"),
+                                  Text(dataText.textSpotNotAvaliable,),
                             )
                           : GridView.builder(
                               gridDelegate:

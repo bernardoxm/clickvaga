@@ -57,7 +57,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
               ),
               SizedBox(height: 10),
               Text(
-                "${dataText.textEntry}: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now())}",
+                "${dataText.textEntry} ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now())}",
                 style: TextStyle(fontSize: 14),
               ),
               if (errorMessage != null) 
@@ -122,7 +122,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
                   context.read<PlateBloc>().add(UpdatePlate(""));
                 },
                 child: Text(
-                 dataText.textEntry,
+                 dataText.textBtnEntry,
                   style: TextStyle(color: dataColors.colorWhite),
                 ),
               ),
