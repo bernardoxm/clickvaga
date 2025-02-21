@@ -76,7 +76,7 @@ class ParkingSpotRepository {
   }
 
   Future<void> insertPlateWithSpot(ParkingSpotModel parkingSpot) async {
-    print("insertPlateWithSpot iniciado com: ${parkingSpot.toJson()}");
+ 
     await DataFunctions().insertParkingEntry(parkingSpot);
   }
 

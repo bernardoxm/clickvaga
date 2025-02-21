@@ -97,7 +97,7 @@ Future<void> insertPlateWithSpot(ParkingSpotModel parkingSpot) async {
       {'isOccupied': 1}, 
       whereArgs: [parkingSpot.spotId],
     );
-    print(parkingSpot.toJson());
+  
   }
 
 

@@ -15,7 +15,7 @@ class FindWidget extends StatefulWidget {
   final VoidCallback onFilterAvailable;
 
   const FindWidget({
-    Key? key,
+    super.key,
     required this.totalSpots,
     required this.spotsOccupied,
     required this.onSearch,
@@ -24,7 +24,7 @@ class FindWidget extends StatefulWidget {
     required this.onFilterAll,
     required this.onFilterOccupied,
     required this.onFilterAvailable,
-  }) : super(key: key);
+  });
 
   @override
   State<FindWidget> createState() => _FindWidgetState();
@@ -64,7 +64,7 @@ class _FindWidgetState extends State<FindWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  '${dataText.textAvaliable} ${widget.totalSpots - widget.spotsOccupied}',
+                  '${dataText.textAvailables} ${widget.totalSpots - widget.spotsOccupied}',
                   style:  TextStyle(fontSize: 18, color: dataColor.colorWhite),
                 ),
                 Text(
@@ -176,7 +176,7 @@ class _FindWidgetState extends State<FindWidget> {
                           widget.onFilterAvailable();
                         },
                         icon:  Icon(Icons.directions_bus_filled_outlined, color: filtersData.selectedFilter == 2 ? dataColor.colorRed : dataColor.colorRaroBlue),
-                        label:  Text(dataText.textShowAvalible),
+                        label:  Text(dataText.textShowAvailables),
                         style: filtersData.selectedFilter == 2
                             ? ElevatedButton.styleFrom(
                                 backgroundColor: dataColor.colorWhite,

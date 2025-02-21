@@ -83,7 +83,7 @@ class ParkingSpotCardWidget extends StatelessWidget {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          isOccupied ? dataText.textOccupied : dataText.textAvaliable,
+                          isOccupied ? dataText.textSpotOccup : dataText.textSpotAvailable,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -96,7 +96,7 @@ class ParkingSpotCardWidget extends StatelessWidget {
                     ),
                     if (isOccupied == false)
                       LicensePlateWidget(
-                        plate: dataText.textAval,
+                        plate: dataText.textSpotAvailable,
                       ),
                     if (isOccupied) ...[
                       LicensePlateWidget(

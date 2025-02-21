@@ -39,21 +39,20 @@ class ExitDialogWidget extends StatelessWidget {
               ],
             ),
           ),
-          if (entryTime != null)
-            RichText(
-              text: TextSpan(
-                style: TextStyle(fontSize: 16, color: Colors.black),
-                children: [
-                  TextSpan(
-                    text: dataText.textEntry,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text: DateFormat('dd/MM/yyyy HH:mm').format(entryTime!),
-                  ),
-                ],
-              ),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: 16, color: Colors.black),
+              children: [
+                TextSpan(
+                  text: dataText.textEntry,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(
+                  text: DateFormat('dd/MM/yyyy HH:mm').format(entryTime),
+                ),
+              ],
             ),
+          ),
           RichText(
             text: TextSpan(
               style: TextStyle(fontSize: 16, color: Colors.black),
@@ -68,22 +67,21 @@ class ExitDialogWidget extends StatelessWidget {
               ],
             ),
           ),
-          if (entryTime != null)
-            RichText(
-              text: TextSpan(
-                style: TextStyle(fontSize: 16, color: Colors.black),
-                children: [
-                  TextSpan(
-                    text: dataText.textDuration,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  TextSpan(
-                    text:
-                        _formatDuration(DateTime.now().difference(entryTime)),
-                  ),
-                ],
-              ),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: 16, color: Colors.black),
+              children: [
+                TextSpan(
+                  text: dataText.textDuration,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                TextSpan(
+                  text:
+                      _formatDuration(DateTime.now().difference(entryTime)),
+                ),
+              ],
             ),
+          ),
         ],
       ),
       actions: [

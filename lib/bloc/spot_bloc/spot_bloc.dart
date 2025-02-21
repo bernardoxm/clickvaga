@@ -1,4 +1,5 @@
 
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:clickvagas/models/spot_card_info.dart';
 import 'package:clickvagas/models/spot_model.dart';

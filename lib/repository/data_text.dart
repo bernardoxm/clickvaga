@@ -23,13 +23,13 @@ String textAppWelcomeButton = 'Vamos começar';
 String textToStart = 'Para começar, informe o número de vagas disponíveis no seu estacionamento: ';
 String textSpots = ' Vagas';
 String textNumofSpots = 'Número de vagas';
-String textEnterPlate = 'Digite a placa';
+String textEnterPlate = 'Informe a Placa para buscar a vaga';
 String textSearch = 'Pesquisar';
 String textFilters = 'Filtros';
 String textFilterPlate = 'Filtrar por placa';
-String textAvaliable = 'Disponíveis: ';
+String textAvailables = 'Disponíveis: ';
 String textOccupied = 'Ocupadas: ';
-String textShowAvalible = 'Mostrar disponíveis';
+String textShowAvailables = 'Mostrar disponíveis';
 String textShowOccupied = 'Mostrar ocupadas';
 String textShowAll = 'Mostrar todas';
 String textAval = 'Disponíveis';
@@ -47,7 +47,9 @@ String textFilterByDate = 'Filtrar por data';
 String textBtnEntry = 'Entrada';
 String textBtnExit = 'Saída';
 String textDelSpotIsOccupied = '"Não é possível remover uma vaga ocupada!"';
-String textSpotNotAvaliable  = 'Não há vagas disponíveis ou ocupadas';
+String textSpotNotAvailables  = 'Não há vagas disponíveis ou ocupadas';
+String textSpotAvailable = 'Disponível';
+String textSpotOccup = 'Ocupada';
 
 
 

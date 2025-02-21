@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sqflite/sqflite.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper dbHelper = DatabaseHelper();
-  Database db = await dbHelper.database;
+ 
   
   runApp(
     MultiBlocProvider(
@@ -35,6 +35,7 @@ void main() async {
   );
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 

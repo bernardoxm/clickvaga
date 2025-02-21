@@ -16,9 +16,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 class ParkingSpotsPage extends StatefulWidget {
-  const ParkingSpotsPage({Key? key}) : super(key: key);
+  const ParkingSpotsPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ParkingSpotsPageState createState() => _ParkingSpotsPageState();
 }
 
@@ -62,6 +63,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                         await spotBloc.repository.createSpots(spots);
                         Future.delayed(Duration.zero, () {
                           spotBloc.add(LoadSpotsEvent());
+                          // ignore: use_build_context_synchronously
                           Navigator.pop(context);
                         });
                       }
@@ -256,7 +258,7 @@ class _ParkingSpotsPageState extends State<ParkingSpotsPage> {
                       child: filteredCards.isEmpty
                           ?  Center(
                               child:
-                                  Text(dataText.textSpotNotAvaliable,),
+                                  Text(dataText.textSpotNotAvailables,),
                             )
                           : GridView.builder(
                               gridDelegate:

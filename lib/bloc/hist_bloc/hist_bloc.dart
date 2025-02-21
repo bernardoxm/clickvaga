@@ -1,3 +1,4 @@
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:clickvagas/models/spot_parking_model.dart';
 import 'package:clickvagas/repository/parking_spot_repository.dart';

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 class CreatedParkingSpotsWidget extends StatefulWidget {
   final TextEditingController spotsController;
-  const CreatedParkingSpotsWidget({Key? key, required this.spotsController}) : super(key: key);
+  const CreatedParkingSpotsWidget({super.key, required this.spotsController});
 
   @override
   State<CreatedParkingSpotsWidget> createState() => _CreatedParkingSpotsWidgetState();

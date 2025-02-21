@@ -34,7 +34,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
             children: [
               TextField(
                 decoration: InputDecoration(
-                  labelText:dataText.textPlate ,
+                 
                   hintText: dataText.textPlateEx,
                   errorText: state.plate.isNotEmpty && !state.isValid
                       ? dataText.textInvalidPlate

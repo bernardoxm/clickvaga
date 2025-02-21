@@ -1,3 +1,4 @@
+// ignore: file_names
 
 import 'package:clickvagas/pages/hist_spot_page.dart';
 import 'package:clickvagas/pages/parking_spots_page.dart';
@@ -10,6 +11,7 @@ class NaviPage extends StatefulWidget {
 
   @override
 
+  // ignore: library_private_types_in_public_api
   _NaviPageState createState() => _NaviPageState();
 }
 

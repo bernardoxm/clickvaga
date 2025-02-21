@@ -84,7 +84,7 @@ class _HistFilterWidgetState extends State<HistFilterWidget> {
                     _filterButton(dataText.textShowOccupied,
                         Icons.directions_bus, 1, widget.onFilterActive),
                     _filterButton(
-                        dataText.textShowAvalible,
+                        dataText.textShowAvailables,
                         Icons.directions_bus_filled_outlined,
                         2,
                         widget.onFilterFinished),
