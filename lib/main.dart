@@ -7,16 +7,19 @@ import 'package:clickvagas/repository/data_color.dart';
 import 'package:clickvagas/repository/data_text.dart';
 import 'package:clickvagas/repository/parking_spot_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper dbHelper = DatabaseHelper();
- 
   
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -40,28 +43,27 @@ class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   DataColor dataColors = DataColor();
-  DataText    dataText = DataText();
+  DataText dataText = DataText();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: dataText.textTitle,
       theme: ThemeData(
         dialogTheme: DialogTheme(
           backgroundColor: dataColors.colorWhite,
           titleTextStyle: TextStyle(
-            color: dataColors.colorRaroBlueDark, 
+            color: dataColors.colorRaroBlueDark,
             fontFamily: 'Montserrat',
-             fontWeight: FontWeight.bold,
-             fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
           contentTextStyle: TextStyle(
-            color: dataColors.colorRaroBlueDark, 
+            color: dataColors.colorRaroBlueDark,
             fontFamily: 'Montserrat',
           ),
-          
         ),
-
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(
             textStyle: WidgetStateProperty.all(
@@ -70,9 +72,8 @@ class MyApp extends StatelessWidget {
                 fontFamily: 'Montserrat',
               ),
             ),
-            backgroundColor: WidgetStateProperty.all(
-                dataColors.colorRaroBlueDark 
-                ),
+            backgroundColor:
+                WidgetStateProperty.all(dataColors.colorRaroBlueDark),
           ),
         ),
         appBarTheme: AppBarTheme(
@@ -84,11 +85,10 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(
               color: dataColors.colorWhite,
             ),
-            backgroundColor: dataColors.colorRaroBlueDark 
-            ),
-        textTheme: GoogleFonts.montserratTextTheme(), 
+            backgroundColor: dataColors.colorRaroBlueDark),
+        textTheme: GoogleFonts.montserratTextTheme(),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: dataColors.colorRaroBlue, 
+          seedColor: dataColors.colorRaroBlue,
         ),
       ),
       locale: const Locale('pt', 'BR'),
