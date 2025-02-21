@@ -32,7 +32,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
+              TextField(maxLength: 7,
                 decoration: InputDecoration(
                  
                   hintText: dataText.textPlateEx,
