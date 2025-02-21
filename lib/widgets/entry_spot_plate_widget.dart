@@ -27,7 +27,7 @@ class _EntryDialogWidgetState extends State<EntryDialogWidget> {
       return AlertDialog(
         title: Text(dataText.textVehicleEntry),
         content: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.15,
+          height: MediaQuery.of(context).size.height * 0.18,
           width: MediaQuery.of(context).size.width * 0.9,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
